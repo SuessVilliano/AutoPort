@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Port Your Phone Number | GoHighLevel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ─── TOP NAV ─────────────────────────────────────────── */
+    .nav {
+      background: #1a1a2e;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: #f59e0b; }
+    .nav-badge {
+      font-size: 11px;
+      background: #f59e0b;
+      color: #1a1a2e;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* ─── PROGRESS BAR ────────────────────────────────────── */
+    .progress-wrap {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 32px;
+    }
+    .progress-steps {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: stretch;
+    }
+    .step-btn {
+      flex: 1;
+      padding: 16px 8px 14px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #9ca3af;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      position: relative;
+    }
+    .step-btn .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .step-btn.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+    .step-btn.active .step-num { background: #2563eb; color: #fff; }
+    .step-btn.done { color: #059669; }
+    .step-btn.done .step-num { background: #059669; color: #fff; }
+
+    /* ─── MAIN LAYOUT ─────────────────────────────────────── */
+    .main { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+      padding: 20px 28px;
+      color: #fff;
+    }
+    .card-header h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .card-header p { font-size: 13px; opacity: 0.85; }
+    .card-body { padding: 28px; }
+
+    /* ─── ALERT BOXES ─────────────────────────────────────── */
+    .alert {
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13.5px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+    .alert-warn { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+    .alert-success { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; }
+    .alert-error { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+
+    /* ─── FORM ELEMENTS ───────────────────────────────────── */
+    .form-grid { display: grid; gap: 18px; }
+    .form-grid.two-col { grid-template-columns: 1fr 1fr; }
+    .form-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+    }
+    label .req { color: #ef4444; margin-left: 2px; }
+    label .hint { font-weight: 400; color: #6b7280; margin-left: 4px; }
+
+    input[type="text"], input[type="email"], input[type="tel"],
+    input[type="date"], select, textarea {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #111827;
+      background: #fff;
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+    input.error, select.error { border-color: #ef4444; }
+    .field-error { font-size: 12px; color: #ef4444; margin-top: 3px; }
+    .field-success { font-size: 12px; color: #059669; margin-top: 3px; }
+
+    .radio-group { display: flex; gap: 16px; }
+    .radio-card {
+      flex: 1;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .radio-card:hover { border-color: #93c5fd; background: #eff6ff; }
+    .radio-card input { width: auto; margin: 0; }
+    .radio-card.selected { border-color: #2563eb; background: #eff6ff; }
+    .radio-card-label { font-weight: 600; font-size: 14px; }
+    .radio-card-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+    /* ─── PHONE NUMBER ROWS ───────────────────────────────── */
+    .number-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: flex-end;
+      padding: 14px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 10px;
+    }
+    .number-row-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
+    .btn-remove {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      transition: background .2s;
+    }
+    .btn-remove:hover { background: #fca5a5; }
+
+    /* ─── ELIGIBILITY BADGE ───────────────────────────────── */
+    .elig-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .elig-portable { background: #d1fae5; color: #065f46; }
+    .elig-checking { background: #e0e7ff; color: #3730a3; }
+    .elig-notportable { background: #fee2e2; color: #991b1b; }
+    .elig-unknown { background: #f3f4f6; color: #6b7280; }
+
+    /* ─── FILE UPLOAD ─────────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+    }
+    .upload-icon { font-size: 36px; margin-bottom: 10px; }
+    .upload-text { font-size: 14px; color: #374151; font-weight: 500; }
+    .upload-sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+    .file-selected {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 10px;
+    }
+    .file-selected-name { font-size: 13px; color: #065f46; font-weight: 500; flex: 1; }
+    .btn-clear-file {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+    .btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .btn-outline { background: none; color: #2563eb; border: 1.5px solid #2563eb; }
+    .btn-outline:hover { background: #eff6ff; }
+    .btn-green { background: #059669; color: #fff; }
+    .btn-green:hover { background: #047857; }
+    .btn-add {
+      background: none;
+      border: 1.5px dashed #2563eb;
+      color: #2563eb;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 6px;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn-add:hover { background: #eff6ff; }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 28px;
+    }
+
+    /* ─── STEP PANELS ─────────────────────────────────────── */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* ─── REVIEW SECTION ─────────────────────────────────── */
+    .review-section {
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .review-section-title {
+      background: #f9fafb;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 18px;
+      gap: 14px;
+    }
+    .review-item label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+    .review-item p { font-size: 14px; color: #111827; font-weight: 500; margin-top: 2px; }
+
+    /* ─── STATUS TRACKER ─────────────────────────────────── */
+    .status-timeline { padding: 10px 0; }
+    .timeline-step {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      position: relative;
+    }
+    .timeline-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 40px;
+      bottom: 0;
+      width: 2px;
+      background: #e5e7eb;
+    }
+    .timeline-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .timeline-dot.done { background: #059669; }
+    .timeline-dot.active { background: #2563eb; animation: pulse 2s infinite; }
+    .timeline-dot.pending { background: #e5e7eb; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(37,99,235,0); }
+    }
+    .timeline-content h4 { font-size: 14px; font-weight: 600; color: #111827; }
+    .timeline-content p { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+    /* ─── SPINNER ─────────────────────────────────────────── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── MOBILE ──────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .form-grid.two-col, .form-grid.three-col { grid-template-columns: 1fr; }
+      .number-row-fields { grid-template-columns: 1fr; }
+      .review-grid { grid-template-columns: 1fr; }
+      .radio-group { flex-direction: column; }
+      .main { margin: 16px auto; }
+    }
+
+    /* ─── CHECKBOX ────────────────────────────────────────── */
+    .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 18px; height: 18px;
+      margin-top: 2px;
+      accent-color: #2563eb;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .checkbox-item span { font-size: 13px; color: #374151; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Go<span>HighLevel</span></div>
+  <div class="nav-badge">Phone Porting</div>
+</nav>
+
+<!-- PROGRESS STEPS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <button class="step-btn active" id="step-nav-1" onclick="goToStep(1)">
+      <span class="step-num">1</span> Eligibility
+    </button>
+    <button class="step-btn" id="step-nav-2" onclick="goToStep(2)">
+      <span class="step-num">2</span> Your Info
+    </button>
+    <button class="step-btn" id="step-nav-3" onclick="goToStep(3)">
+      <span class="step-num">3</span> Documents
+    </button>
+    <button class="step-btn" id="step-nav-4" onclick="goToStep(4)">
+      <span class="step-num">4</span> Review
+    </button>
+    <button class="step-btn" id="step-nav-5" onclick="goToStep(5)">
+      <span class="step-num">5</span> Status
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 1 — ELIGIBILITY CHECK                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel active" id="step-1">
+    <div class="card">
+      <div class="card-header">
+        <h2>📞 Check Number Portability</h2>
+        <p>Enter the phone number(s) you'd like to port to GoHighLevel. We'll check if they're eligible before you start.</p>
+      </div>
+      <div class="card-body">
+
+        <div class="alert alert-info">
+          <div class="alert-icon">ℹ️</div>
+          <div>
+            <strong>Before you begin:</strong> This tool supports US local and wireless (non-toll-free) numbers. Toll-free or international numbers require a separate process — our support team will help. Keep your numbers active with your current carrier until the port completes.
+          </div>
+        </div>
+
+        <div id="eligibility-numbers">
+          <div class="number-row" id="elig-row-0">
+            <div class="form-group" style="flex:1">
+              <label>Phone Number <span class="req">*</span></label>
+              <input type="tel" class="elig-num" placeholder="+1 (312) 588-9960" oninput="formatPhone(this)" />
+              <div class="field-error" style="display:none"></div>
+            </div>
+            <div id="elig-badge-0" class="elig-badge elig-unknown" style="margin-bottom:4px">● Not Checked</div>
+          </div>
+        </div>
+
+        <button class="btn-add" onclick="addEligRow()">+ Add Another Number</button>
+
+        <div class="form-actions">
+          <div></div>
+          <button class="btn btn-primary" onclick="checkEligibility()" id="btn-check-elig">
+            Check Eligibility →
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 2 — BASIC INFORMATION                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel" id="step-2">
+    <div class="card">
+      <div class="card-header">
+        <h2>👤 Account Holder Information</h2>
+        <p>This must match exactly what your current carrier has on file. Mismatches cause rejections.</p>
+      </div>
+      <div class="card-body">
+
+        <div id="elig-summary" class="alert alert-success" style="display:none">
+          <div class="alert-icon">✅</div>
+          <div id="elig-summary-text"></div>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-group" style="margin-bottom:20px">
+          <label>Account Type <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-card" id="rc-individual" onclick="selectType('individual')">
+              <input type="radio" name="customerType" value="individual" checked />
+              <div>
+                <div class="radio-card-label">🏠 Individual / Residential</div>
+                <div class="radio-card-sub">Personal phone account</div>
+              </div>
+            </label>
+            <label class="radio-card" id="rc-business" onclick="selectType('business')">
+              <input type="radio" name="customerType" value="business" />
+              <div>
+                <div class="radio-card-label">🏢 Business</div>
+                <div class="radio-card-sub">Company / organization account</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="form-grid two-col" style="margin-bottom:18px">
+          <div class="form-group">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Derek" />
+            <div class="field-error" id="err-firstName" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Jones" />
+            <div class="field-error" id="err-lastName" style="display:none"></div>
+          </div>
+        </div>
+
+        <!-- Business Name — shown only when Business is selected -->
+        <div class="form-group" id="businessNameGroup" style="display:none;margin-bottom:18px">
+          <label>Business / Company Name <span class="req">*</span> <span class="hint">(as it appears on your carrier account)</span></label>
+          <input type="text" id="businessName" placeholder="Jones Marketing LLC" />
+          <div class="field-error" id="err-businessName" style="display:none"></div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px">
+          <label>Email Address <span class="req">*</span> <span class="hint">(LOA will be sent here)</span></label>
+          <input type="email" id="email" placeholder="derek@example.com" />
+          <div class="field-error" id="err-email" style="display:none"></div>
+        </div>
+
+        <!-- CC / BCC Emails -->
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">📬 Notification Recipients</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6;">
+            All status updates will automatically be CC'd to <strong style="color:#1e3a5f;">migration@leadconnectorhq.com</strong>.
+            Add extra people below if needed.
+          </div>
+          <div class="form-grid two-col">
+            <div class="form-group">
+              <label>CC Email <span class="hint">(optional)</span></label>
+              <input type="email" id="ccEmail" placeholder="manager@company.com" />
+              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Visible to recipient</div>
+            </div>
+            <div class="form-group">
+              <label>BCC Email <span class="hint">(optional)</span></label>
+              <input type="email" id="bccEmail" placeholder="records@company.com" />
+              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Hidden from other recipients</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Address -->
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px;padding-top:4px;border-top:1px solid #e5e7eb;padding-top:16px">
+          📍 Service Address <span style="font-size:12px;font-weight:400;color:#6b7280">(must match your carrier's records)</span>
+        </h3>
+
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Street Address <span class="req">*</span></label>
+          <input type="text" id="street" placeholder="1803 Great Falls Dr" />
+          <div class="field-error" id="err-street" style="display:none"></div>
+        </div>
+
+        <div class="form-grid three-col" style="margin-bottom:20px">
+          <div class="form-group">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="Plainfield" />
+            <div class="field-error" id="err-city" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label>State <span class="req">*</span></label>
+            <select id="state">
+              <option value="">— Select —</option>
+              <option>Alabama</option><option>Alaska</option><option>Arizona</option>
+              <option>Arkansas</option><option>California</option><option>Colorado</option>
+              <option>Connecticut</option><option>Delaware</option><option>Florida</option>
+              <option>Georgia</option><option>Hawaii</option><option>Idaho</option>
+              <option>Illinois</option><option>Indiana</option><option>Iowa</option>
+              <option>Kansas</option><option>Kentucky</option><option>Louisiana</option>
+              <option>Maine</option><option>Maryland</option><option>Massachusetts</option>
+              <option>Michigan</option><option>Minnesota</option><option>Mississippi</option>
+              <option>Missouri</option><option>Montana</option><option>Nebraska</option>
+              <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+              <option>New Mexico</option><option>New York</option><option>North Carolina</option>
+              <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
+              <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
+              <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
+              <option>Texas</option><option>Utah</option><option>Vermont</option>
+              <option>Virginia</option><option>Washington</option><option>West Virginia</option>
+              <option>Wisconsin</option><option>Wyoming</option>
+            </select>
+            <div class="field-error" id="err-state" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label>ZIP Code <span class="req">*</span></label>
+            <input type="text" id="zip" placeholder="60586" maxlength="10" />
+            <div class="field-error" id="err-zip" style="display:none"></div>
+          </div>
+        </div>
+
+        <!-- Numbers to Port -->
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px;padding-top:16px;border-top:1px solid #e5e7eb">
+          📱 Numbers to Port
+        </h3>
+
+        <div id="port-numbers-wrap"></div>
+
+        <button class="btn-add" onclick="addPortNumber()">+ Add Number</button>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="validateStep2()">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 3 — DOCUMENTS                             -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel" id="step-3">
+    <div class="card">
+      <div class="card-header">
+        <h2>📄 Upload Required Documents</h2>
+        <p>Your billing statement proves ownership of the numbers. PDF only, max 4MB each.</p>
+      </div>
+      <div class="card-body">
+
+        <div class="alert alert-warn">
+          <div class="alert-icon">⚠️</div>
+          <div>
+            <strong>Important:</strong> Your billing statement must show the same name and address you entered on the previous step. Mismatches are the #1 cause of port rejections.
+          </div>
+        </div>
+
+        <!-- Billing Statement -->
+        <div class="form-group" style="margin-bottom:24px">
+          <label>Billing Statement / Phone Bill <span class="req">*</span></label>
+          <div class="upload-zone" id="upload-bill-zone">
+            <input type="file" id="upload-bill" accept=".pdf" onchange="handleFileSelect('bill', this)" />
+            <div class="upload-icon">📋</div>
+            <div class="upload-text">Drop your phone bill here or click to browse</div>
+            <div class="upload-sub">PDF only · Max 4MB</div>
+          </div>
+          <div id="bill-selected" style="display:none" class="file-selected">
+            <span>📄</span>
+            <span class="file-selected-name" id="bill-filename"></span>
+            <button class="btn-clear-file" onclick="clearFile('bill')">✕</button>
+          </div>
+          <div class="field-error" id="err-bill" style="display:none"></div>
+        </div>
+
+        <!-- LOA info -->
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:18px;margin-bottom:24px">
+          <div style="font-weight:700;color:#166534;margin-bottom:8px;font-size:14px">📝 Letter of Authorization (LOA)</div>
+          <p style="font-size:13px;color:#15803d;line-height:1.6">
+            Twilio will automatically generate your LOA once your request is submitted. You'll receive it by email and will need to digitally sign it before your port can proceed. No file upload needed from you for the LOA.
+          </p>
+        </div>
+
+        <!-- Terms checkboxes -->
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px">✅ Agreement</h3>
+        <div class="checkbox-group" id="terms-group">
+          <label class="checkbox-item">
+            <input type="checkbox" name="terms" value="rates" />
+            <span>I understand I will pay standard Twilio rates for my phone number and usage after porting completes.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="terms" value="active" />
+            <span>I will keep all numbers active with my current carrier until the port completes to avoid delays.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="terms" value="configure" />
+            <span>I understand I should configure my number in the GHL portal before my number ports.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="terms" value="termination" />
+            <span>I am responsible for any termination charges imposed by my current carrier.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="terms" value="messages" />
+            <span>I understand I may be unable to receive SMS messages for up to 3 business days after the port completes.</span>
+          </label>
+        </div>
+        <div class="field-error" id="err-terms" style="display:none;margin-top:8px"></div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="validateStep3()">Review Request →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 4 — REVIEW & SUBMIT                       -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel" id="step-4">
+    <div class="card">
+      <div class="card-header">
+        <h2>🔍 Review Your Port Request</h2>
+        <p>Please review everything below carefully before submitting. Errors here cause carrier rejections.</p>
+      </div>
+      <div class="card-body">
+
+        <div class="review-section">
+          <div class="review-section-title">Account Holder</div>
+          <div class="review-grid">
+            <div class="review-item">
+              <label>Full Name</label>
+              <p id="rev-name">—</p>
+            </div>
+            <div class="review-item">
+              <label>Account Type</label>
+              <p id="rev-type">—</p>
+            </div>
+            <div class="review-item">
+              <label>Email</label>
+              <p id="rev-email">—</p>
+            </div>
+            <div class="review-item">
+              <label>Service Address</label>
+              <p id="rev-address">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-section">
+          <div class="review-section-title">Numbers to Port</div>
+          <div id="rev-numbers" style="padding:18px"></div>
+        </div>
+
+        <div class="review-section">
+          <div class="review-section-title">Documents</div>
+          <div class="review-grid">
+            <div class="review-item">
+              <label>Billing Statement</label>
+              <p id="rev-bill">—</p>
+            </div>
+            <div class="review-item">
+              <label>Letter of Authorization</label>
+              <p>Will be generated by Twilio after submission</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-warn" style="margin-top:20px">
+          <div class="alert-icon">⏱️</div>
+          <div>
+            <strong>Timeline:</strong> Porting typically takes 5–15 business days. You'll receive a status email at each step. Do NOT cancel your existing carrier service until the port is confirmed complete.
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+          <button class="btn btn-green" onclick="submitPortRequest()" id="btn-submit">
+            Submit Port Request 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 5 — STATUS / CONFIRMATION                 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel" id="step-5">
+    <div class="card">
+      <div class="card-header">
+        <h2>🎉 Request Submitted!</h2>
+        <p>Your port-in request has been received and is being processed.</p>
+      </div>
+      <div class="card-body">
+
+        <div class="alert alert-success">
+          <div class="alert-icon">✅</div>
+          <div>
+            <strong>Port Request ID:</strong> <span id="port-request-id" style="font-family:monospace;font-size:15px">—</span><br/>
+            You'll receive an email shortly with your Letter of Authorization to sign. Check your inbox at <span id="conf-email">—</span>
+          </div>
+        </div>
+
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:16px">📊 Port Status</h3>
+        <div class="status-timeline">
+
+          <div class="timeline-step">
+            <div class="timeline-dot done">✓</div>
+            <div class="timeline-content">
+              <h4>Request Submitted</h4>
+              <p>Your information has been validated and sent to Twilio.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-dot active">✉️</div>
+            <div class="timeline-content">
+              <h4>Waiting for LOA Signature</h4>
+              <p>Check your email to sign the Letter of Authorization. You have 30 days.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-dot pending" style="color:#9ca3af">📤</div>
+            <div class="timeline-content">
+              <h4>Submitted to Carrier</h4>
+              <p>Once signed, Twilio will submit to your current carrier.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-dot pending" style="color:#9ca3af">📅</div>
+            <div class="timeline-content">
+              <h4>FOC Date Confirmed</h4>
+              <p>Your carrier confirms the Firm Order Commitment date.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-dot pending" style="color:#9ca3af">🏁</div>
+            <div class="timeline-content">
+              <h4>Port Complete</h4>
+              <p>Your number is live in GoHighLevel — ready to use!</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid #e5e7eb">
+          <h3 style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">💡 What to do now</h3>
+          <ul style="font-size:13.5px;color:#374151;line-height:2;padding-left:20px">
+            <li>Check your email (<span id="conf-email-2">—</span>) for the LOA to sign</li>
+            <li>Keep your numbers active with your current carrier</li>
+            <li>Configure your GHL workflows for these numbers while you wait</li>
+            <li>Watch for status update emails — we'll notify you at each step</li>
+            <li>If rejected, you'll see a fix-and-resubmit option here automatically</li>
+          </ul>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="startOver()">Start New Request</button>
+          <button class="btn btn-primary" onclick="checkStatus()">🔄 Refresh Status</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let currentStep = 1;
+let eligibleNumbers = [];
+let uploadedFiles = { bill: null, loa: null };
+let portRequestData = {};
+
+// Relative API base — works on Vercel (same domain) and local dev
+const API_BASE = '/api/porting';
+
+// ═══════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════
+function goToStep(n) {
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  document.getElementById(`step-nav-${currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step-${n}`).classList.add('active');
+  const nav = document.getElementById(`step-nav-${n}`);
+  nav.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 1 — ELIGIBILITY
+// ═══════════════════════════════════════════════════
+let eligRowCount = 1;
+
+function addEligRow() {
+  const i = eligRowCount++;
+  const wrap = document.getElementById('eligibility-numbers');
+  const div = document.createElement('div');
+  div.className = 'number-row';
+  div.id = `elig-row-${i}`;
+  div.innerHTML = `
+    <div class="form-group" style="flex:1">
+      <label>Phone Number <span class="req">*</span></label>
+      <input type="tel" class="elig-num" placeholder="+1 (555) 000-0000" oninput="formatPhone(this)" />
+      <div class="field-error" style="display:none"></div>
+    </div>
+    <div id="elig-badge-${i}" class="elig-badge elig-unknown" style="margin-bottom:4px">● Not Checked</div>
+    <button class="btn-remove" onclick="this.parentElement.remove()">−</button>
+  `;
+  wrap.appendChild(div);
+}
+
+function formatPhone(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length === 0) { input.value = ''; return; }
+  if (v[0] !== '1') v = '1' + v;
+  if (v.length > 11) v = v.slice(0,11);
+  const parts = [];
+  if (v.length > 1) parts.push(v.slice(1,4));
+  if (v.length > 4) parts.push(v.slice(4,7));
+  if (v.length > 7) parts.push(v.slice(7,11));
+  input.value = '+1 (' + (parts[0]||'') + (parts[1] ? ') '+parts[1] : '') + (parts[2] ? '-'+parts[2] : '');
+  input.dataset.e164 = '+1' + v.slice(1);
+}
+
+function checkEligibility() {
+  const inputs = document.querySelectorAll('.elig-num');
+  const numbers = [];
+  let valid = true;
+
+  inputs.forEach((inp, i) => {
+    const e164 = inp.dataset.e164;
+    if (!e164 || e164.length < 12) {
+      inp.classList.add('error');
+      inp.nextElementSibling.style.display = 'block';
+      inp.nextElementSibling.textContent = 'Enter a valid US phone number';
+      valid = false;
+    } else {
+      inp.classList.remove('error');
+      inp.nextElementSibling.style.display = 'none';
+      numbers.push(e164);
+    }
+  });
+
+  if (!valid) return;
+
+  // Update badges to "checking"
+  document.querySelectorAll('[id^="elig-badge-"]').forEach((b,i) => {
+    if (numbers[i]) {
+      b.className = 'elig-badge elig-checking';
+      b.textContent = '⟳ Checking…';
+    }
+  });
+
+  const btn = document.getElementById('btn-check-elig');
+  btn.innerHTML = '<div class="spinner"></div> Checking…';
+  btn.disabled = true;
+
+  // Simulate API call (replace with real fetch to /api/porting/eligibility)
+  setTimeout(() => {
+    eligibleNumbers = [];
+    const badges = document.querySelectorAll('[id^="elig-badge-"]');
+    numbers.forEach((num, i) => {
+      // Simulated result — in production, call your backend
+      const isPortable = !num.startsWith('+1800') && !num.startsWith('+1888');
+      const numberType = 'LOCAL';
+      badges[i].className = `elig-badge ${isPortable ? 'elig-portable' : 'elig-notportable'}`;
+      badges[i].textContent = isPortable ? '✓ Portable' : '✗ Not Portable';
+      if (isPortable) eligibleNumbers.push({ number: num, type: numberType });
+    });
+
+    btn.innerHTML = 'Check Eligibility →';
+    btn.disabled = false;
+
+    // Check for toll-free / international numbers
+    const tollFree = numbers.filter(n => /^\+1(800|833|844|855|866|877|888)/.test(n));
+    const intl     = numbers.filter(n => !n.startsWith('+1'));
+    const manualLane = [...tollFree, ...intl];
+
+    if (manualLane.length > 0) {
+      badges.forEach((b, i) => {
+        if (manualLane.includes(numbers[i])) {
+          b.className = 'elig-badge elig-notportable';
+          b.textContent = '🌐 Manual Required';
+        }
+      });
+      const shouldOpen = confirm(
+        `⚠️ Toll-free or international number detected:\n${manualLane.join(', ')}\n\n` +
+        `These require Twilio's international porting form.\n\n` +
+        `Click OK to open the Twilio International Porting Form in a new tab.`
+      );
+      if (shouldOpen) window.open('https://twlo.my.salesforce-sites.com/InternationalPorting', '_blank');
+    }
+
+    if (eligibleNumbers.length > 0) {
+      populateStep2Numbers();
+      // Short delay then advance
+      setTimeout(() => {
+        document.getElementById('step-nav-1').classList.remove('active');
+        document.getElementById('step-nav-1').classList.add('done');
+        goToStep(2);
+        updateEligSummary();
+      }, 600);
+    } else if (manualLane.length === 0) {
+      alert('None of the numbers you entered are portable. Please contact support at migration@leadconnectorhq.com for assistance.');
+    }
+  }, 1800);
+}
+
+function updateEligSummary() {
+  const box = document.getElementById('elig-summary');
+  const txt = document.getElementById('elig-summary-text');
+  const names = eligibleNumbers.map(n => n.number).join(', ');
+  txt.innerHTML = `<strong>${eligibleNumbers.length} portable number(s) ready to port:</strong> ${names}`;
+  box.style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 2 — BASIC INFO
+// ═══════════════════════════════════════════════════
+function selectType(type) {
+  document.getElementById('rc-individual').classList.toggle('selected', type==='individual');
+  document.getElementById('rc-business').classList.toggle('selected', type==='business');
+  // Show business name field when Business is selected
+  const bizGroup = document.getElementById('businessNameGroup');
+  if (type === 'business') {
+    bizGroup.style.display = 'block';
+    document.getElementById('businessName').setAttribute('required','required');
+  } else {
+    bizGroup.style.display = 'none';
+    document.getElementById('businessName').removeAttribute('required');
+    document.getElementById('businessName').value = '';
+  }
+}
+document.getElementById('rc-individual').classList.add('selected');
+
+function populateStep2Numbers() {
+  const wrap = document.getElementById('port-numbers-wrap');
+  wrap.innerHTML = '';
+  eligibleNumbers.forEach((n, i) => {
+    const isWireless = n.type === 'MOBILE';
+    const div = document.createElement('div');
+    div.className = 'number-row';
+    div.style.display = 'block';
+    div.style.padding = '16px';
+    div.innerHTML = `
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:10px">
+        📞 ${n.number} <span style="font-size:11px;color:#6b7280;font-weight:400">(${n.type || 'LOCAL'})</span>
+      </div>
+      <div class="number-row-fields">
+        ${isWireless ? `
+        <div class="form-group">
+          <label>Wireless Account #</label>
+          <input type="text" class="num-acct" placeholder="Account number" />
+        </div>
+        <div class="form-group">
+          <label>PIN / Last 4 SSN</label>
+          <input type="text" class="num-pin" placeholder="XXXX" maxlength="10" />
+        </div>
+        ` : '<div></div><div></div>'}
+      </div>
+    `;
+    div.dataset.number = n.number;
+    div.dataset.type = n.type;
+    wrap.appendChild(div);
+  });
+}
+
+function addPortNumber() {
+  // Allow manually adding more numbers
+  const wrap = document.getElementById('port-numbers-wrap');
+  const div = document.createElement('div');
+  div.className = 'number-row';
+  div.style.display = 'block';
+  div.style.padding = '16px';
+  div.innerHTML = `
+    <div class="form-grid two-col">
+      <div class="form-group">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" class="manual-num" placeholder="+1XXXXXXXXXX" />
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn-remove" onclick="this.closest('.number-row').remove()">−</button>
+      </div>
+    </div>
+  `;
+  wrap.appendChild(div);
+}
+
+function validateStep2() {
+  let ok = true;
+  const isBusiness = document.querySelector('input[name="customerType"]:checked').value === 'business';
+  const required = [
+    ['firstName','First name is required'],
+    ['lastName','Last name is required'],
+    ['email','Email address is required'],
+    ['street','Street address is required'],
+    ['city','City is required'],
+    ['zip','ZIP code is required'],
+  ];
+  // Require business name if business type selected
+  if (isBusiness) {
+    required.push(['businessName','Business name is required']);
+  }
+  required.forEach(([id, msg]) => {
+    const el = document.getElementById(id);
+    const err = document.getElementById(`err-${id}`);
+    if (!el.value.trim()) {
+      el.classList.add('error');
+      err.textContent = msg;
+      err.style.display = 'block';
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      err.style.display = 'none';
+    }
+  });
+
+  if (document.getElementById('state').value === '') {
+    document.getElementById('state').classList.add('error');
+    document.getElementById('err-state').textContent = 'Please select a state';
+    document.getElementById('err-state').style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('state').classList.remove('error');
+    document.getElementById('err-state').style.display = 'none';
+  }
+
+  const zip = document.getElementById('zip').value.trim();
+  if (zip && !/^\d{5}(-\d{4})?$/.test(zip)) {
+    document.getElementById('zip').classList.add('error');
+    document.getElementById('err-zip').textContent = 'Enter a valid ZIP code (e.g. 60586)';
+    document.getElementById('err-zip').style.display = 'block';
+    ok = false;
+  }
+
+  if (ok) {
+    document.getElementById('step-nav-2').classList.add('done');
+    goToStep(3);
+  } else {
+    document.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 3 — DOCUMENTS
+// ═══════════════════════════════════════════════════
+function handleFileSelect(type, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (file.type !== 'application/pdf') {
+    document.getElementById(`err-${type}`).textContent = 'File must be a PDF.';
+    document.getElementById(`err-${type}`).style.display = 'block';
+    input.value = '';
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    document.getElementById(`err-${type}`).textContent = 'File must be under 4MB.';
+    document.getElementById(`err-${type}`).style.display = 'block';
+    input.value = '';
+    return;
+  }
+
+  uploadedFiles[type] = file;
+  document.getElementById(`err-${type}`).style.display = 'none';
+  document.getElementById(`${type}-filename`).textContent = file.name;
+  document.getElementById(`${type}-selected`).style.display = 'flex';
+  document.getElementById(`upload-${type}-zone`).style.display = 'none';
+}
+
+// Drag and drop
+['bill'].forEach(type => {
+  const zone = document.getElementById(`upload-${type}-zone`);
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const dt = e.dataTransfer;
+    if (dt.files.length) {
+      const fakeInput = { files: dt.files };
+      handleFileSelect(type, fakeInput);
+    }
+  });
+});
+
+function clearFile(type) {
+  uploadedFiles[type] = null;
+  document.getElementById(`upload-${type}`).value = '';
+  document.getElementById(`${type}-selected`).style.display = 'none';
+  document.getElementById(`upload-${type}-zone`).style.display = 'block';
+}
+
+function validateStep3() {
+  let ok = true;
+
+  if (!uploadedFiles.bill) {
+    document.getElementById('err-bill').textContent = 'Please upload your phone bill (PDF).';
+    document.getElementById('err-bill').style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('err-bill').style.display = 'none';
+  }
+
+  const checkboxes = document.querySelectorAll('input[name="terms"]:checked');
+  const totalCheckboxes = document.querySelectorAll('input[name="terms"]').length;
+  if (checkboxes.length < totalCheckboxes) {
+    document.getElementById('err-terms').textContent = 'Please agree to all terms before continuing.';
+    document.getElementById('err-terms').style.display = 'block';
+    ok = false;
+  } else {
+    document.getElementById('err-terms').style.display = 'none';
+  }
+
+  if (ok) {
+    buildReview();
+    document.getElementById('step-nav-3').classList.add('done');
+    goToStep(4);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 4 — REVIEW
+// ═══════════════════════════════════════════════════
+function buildReview() {
+  const first = document.getElementById('firstName').value.trim();
+  const last = document.getElementById('lastName').value.trim();
+  const bizName = document.getElementById('businessName').value.trim();
+  const type = document.querySelector('input[name="customerType"]:checked').value;
+  const email = document.getElementById('email').value.trim();
+  const cc  = document.getElementById('ccEmail').value.trim();
+  const bcc = document.getElementById('bccEmail').value.trim();
+  const street = document.getElementById('street').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const state = document.getElementById('state').value;
+  const zip = document.getElementById('zip').value.trim();
+
+  const displayName = type === 'business' && bizName
+    ? `${first} ${last} / ${bizName}`
+    : `${first} ${last}`;
+
+  document.getElementById('rev-name').textContent = displayName;
+  document.getElementById('rev-type').textContent = type === 'individual' ? '🏠 Individual / Residential' : '🏢 Business';
+  document.getElementById('rev-email').textContent = email + (cc ? ` · CC: ${cc}` : '') + (bcc ? ` · BCC: ${bcc}` : '');
+  document.getElementById('rev-address').textContent = `${street}, ${city}, ${state} ${zip}`;
+  document.getElementById('rev-bill').textContent = uploadedFiles.bill ? `📄 ${uploadedFiles.bill.name}` : '—';
+
+  const numWrap = document.getElementById('rev-numbers');
+  const rows = document.querySelectorAll('#port-numbers-wrap .number-row');
+  numWrap.innerHTML = '';
+  rows.forEach(row => {
+    const num = row.dataset.number;
+    if (!num) return;
+    const acct = row.querySelector('.num-acct')?.value || '—';
+    const pin = row.querySelector('.num-pin')?.value ? '****' : '—';
+    const type2 = row.dataset.type || 'LOCAL';
+    numWrap.innerHTML += `
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px">
+        <span style="font-weight:600">${num}</span>
+        <span style="color:#6b7280">${type2} ${acct !== '—' ? `· Acct: ${acct}` : ''} ${pin !== '—' ? `· PIN: ${pin}` : ''}</span>
+      </div>
+    `;
+  });
+
+  // Store for submission — includes CC/BCC and businessName
+  portRequestData = {
+    customerType: type,
+    customerName: `${first} ${last}`,
+    businessName: bizName || null,
+    authorizedRepresentative: `${first} ${last}`,
+    authorizedRepresentativeEmail: email,
+    ccEmails:  cc  ? [cc]  : [],
+    bccEmails: bcc ? [bcc] : [],
+    address: { street, city, state, zip, country: 'US' },
+    phoneNumbers: eligibleNumbers.map(n => ({ number: n.number, type: n.type })),
+    billingFile: uploadedFiles.bill,
+    isBeta: window.IS_BETA_MODE || false,
+  };
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 4 — SUBMIT
+// ═══════════════════════════════════════════════════
+function submitPortRequest() {
+  const btn = document.getElementById('btn-submit');
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff"></div> Submitting…';
+  btn.disabled = true;
+
+  // Real API call
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(portRequestData));
+  if (portRequestData.billingFile) {
+    formData.append('billingStatement', portRequestData.billingFile);
+  }
+
+  fetch(`${API_BASE}/requests`, { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(result => {
+      if (!result.success) throw new Error(result.error || 'Submission failed');
+      document.getElementById('port-request-id').textContent = result.portInRequestSid;
+      document.getElementById('conf-email').textContent = portRequestData.authorizedRepresentativeEmail;
+      document.getElementById('conf-email-2').textContent = portRequestData.authorizedRepresentativeEmail;
+      document.getElementById('step-nav-4').classList.add('done');
+      goToStep(5);
+    })
+    .catch(err => {
+      btn.innerHTML = 'Submit Port Request 🚀';
+      btn.disabled = false;
+      alert('Submission error: ' + err.message + '\n\nPlease try again or contact support.');
+    });
+
+  // Simulated fallback for local dev (remove when backend is live)
+  if (window.IS_BETA_MODE) setTimeout(() => {
+    const fakePortSid = 'KW' + Math.random().toString(36).substr(2,30).toUpperCase();
+    document.getElementById('port-request-id').textContent = fakePortSid;
+    document.getElementById('conf-email').textContent = portRequestData.authorizedRepresentativeEmail;
+    document.getElementById('conf-email-2').textContent = portRequestData.authorizedRepresentativeEmail;
+    document.getElementById('step-nav-4').classList.add('done');
+    goToStep(5);
+  }, 2500);
+}
+
+function checkStatus() {
+  const btn = event.target;
+  btn.innerHTML = '⟳ Refreshing…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = '🔄 Refresh Status';
+    btn.disabled = false;
+  }, 1500);
+}
+
+function startOver() {
+  if (confirm('Start a new port request? Your current submission has already been sent.')) {
+    location.reload();
+  }
+}
+</script>
+
+</body>
+</html>
