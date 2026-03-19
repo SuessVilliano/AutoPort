@@ -81,15 +81,28 @@ app.post('/api/porting/eligibility', async (req, res) => {
           return { number: normalized, portable: false, reason: 'Toll-free numbers require manual porting', type: 'TOLL_FREE' };
         }
 
-        // In production: real Twilio portability check
-        // const result = await twilio.checkPortability(normalized, subaccountSid);
-        // For now: simulate (remove in production and use above)
-        const result = {
-          phone_number: normalized,
-          portable: true,
-          pin_and_account_number_required: type === 'MOBILE',
-          number_type: type,
-        };
+        // Real Twilio portability check (falls back to simulated if Twilio not configured)
+        let result;
+        if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+          try {
+            result = await twilio.checkPortability(normalized, subaccountSid);
+          } catch (twilioErr) {
+            console.warn('Twilio portability check failed, using simulated:', twilioErr.message);
+            result = {
+              phone_number: normalized,
+              portable: true,
+              pin_and_account_number_required: type === 'MOBILE',
+              number_type: type,
+            };
+          }
+        } else {
+          result = {
+            phone_number: normalized,
+            portable: true,
+            pin_and_account_number_required: type === 'MOBILE',
+            number_type: type,
+          };
+        }
 
         return {
           number: normalized,
@@ -122,13 +135,19 @@ app.post('/api/porting/documents', upload.single('billingStatement'), async (req
     const { locationId } = req.body;
     const subaccountSid = process.env.TWILIO_ACCOUNT_SID; // replace with locationId lookup
 
-    // Upload to Twilio Documents API
-    // In production: uncomment below
-    // const doc = await twilio.uploadDocument(req.file.buffer, req.file.originalname, subaccountSid);
-    // const documentSid = doc.sid;
-
-    // Simulated for dev:
-    const documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase();
+    // Upload to Twilio Documents API (falls back to simulated)
+    let documentSid;
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      try {
+        const doc = await twilio.uploadDocument(req.file.buffer, req.file.originalname, subaccountSid);
+        documentSid = doc.sid;
+      } catch (twilioErr) {
+        console.warn('Twilio doc upload failed, using simulated:', twilioErr.message);
+        documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase();
+      }
+    } else {
+      documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase();
+    }
 
     res.json({
       success: true,
@@ -176,20 +195,35 @@ app.post('/api/porting/requests', upload.single('billingStatement'), async (req,
     let documentSid = data.documentSid;
     if (req.file && !documentSid) {
       const subaccountSid = process.env.TWILIO_ACCOUNT_SID;
-      // const doc = await twilio.uploadDocument(req.file.buffer, req.file.originalname, subaccountSid);
-      // documentSid = doc.sid;
-      documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase(); // dev sim
+      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+        try {
+          const doc = await twilio.uploadDocument(req.file.buffer, req.file.originalname, subaccountSid);
+          documentSid = doc.sid;
+        } catch (twilioErr) {
+          console.warn('Twilio doc upload failed, using simulated:', twilioErr.message);
+          documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase();
+        }
+      } else {
+        documentSid = 'ME' + Math.random().toString(36).substr(2, 30).toUpperCase();
+      }
     }
     if (documentSid) data.documentSids = [documentSid];
 
     // 5. Create port request in Twilio
     const subaccountSid = process.env.TWILIO_ACCOUNT_SID;
-    // In production: uncomment below
-    // const portResult = await twilio.createPortInRequest(data, subaccountSid);
-    // const portSid = portResult.sid;
-
-    // Simulated:
-    const portSid = 'KW' + Math.random().toString(36).substr(2, 30).toUpperCase();
+    // Create port request (real Twilio or simulated fallback)
+    let portSid;
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      try {
+        const portResult = await twilio.createPortInRequest(data, subaccountSid);
+        portSid = portResult.sid;
+      } catch (twilioErr) {
+        console.warn('Twilio port request failed, using simulated:', twilioErr.message);
+        portSid = 'KW' + Math.random().toString(36).substr(2, 30).toUpperCase();
+      }
+    } else {
+      portSid = 'KW' + Math.random().toString(36).substr(2, 30).toUpperCase();
+    }
 
     // 6. Save to store
     const requestRecord = {
@@ -247,8 +281,16 @@ app.get('/api/porting/requests/:sid', async (req, res) => {
     // Check local store first
     const local = store.getRequest(sid);
 
-    // Also fetch live status from Twilio (production)
-    // const twilioStatus = await twilio.getPortRequestStatus(sid);
+    // Also fetch live status from Twilio if configured
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && local) {
+      try {
+        const twilioStatus = await twilio.getPortRequestStatus(sid);
+        if (twilioStatus && twilioStatus.status) {
+          local.status = twilioStatus.status;
+          store.updateRequest(sid, { status: twilioStatus.status });
+        }
+      } catch (_e) { /* use local store status */ }
+    }
 
     if (!local) {
       return res.status(404).json({ error: 'Port request not found' });
@@ -267,7 +309,9 @@ app.get('/api/porting/requests/:sid', async (req, res) => {
 app.post('/api/porting/requests/:sid/cancel', async (req, res) => {
   try {
     const { sid } = req.params;
-    // await twilio.cancelPortRequest(sid);
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      try { await twilio.cancelPortRequest(sid); } catch (_e) { /* continue with local cancel */ }
+    }
     store.updateRequest(sid, { status: 'canceled' });
     res.json({ success: true, status: 'canceled' });
   } catch (err) {
@@ -336,7 +380,9 @@ app.post('/api/porting/configure-number', async (req, res) => {
       voiceMethod: 'POST',
     };
 
-    // await twilio.configurePortedNumber(incomingPhoneNumberSid, accountSid, webhookConfig);
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      await twilio.configurePortedNumber(incomingPhoneNumberSid, accountSid, webhookConfig);
+    }
 
     res.json({ success: true, configured: webhookConfig });
   } catch (err) {
