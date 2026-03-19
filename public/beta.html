@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AutoPort Beta — Agent Testing Sandbox</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  .header {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-bottom: 1px solid #1e3a5f;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo { font-size: 18px; font-weight: 800; color: #fff; }
+  .logo span { color: #f59e0b; }
+  .beta-tag {
+    background: #f59e0b;
+    color: #1a1a2e;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+  .header-right { font-size: 12px; color: #64748b; }
+
+  .hero {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid #1e3a5f;
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .hero p { font-size: 15px; color: #94a3b8; max-width: 580px; margin: 0 auto; line-height: 1.6; }
+
+  .warning-banner {
+    background: #292524;
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 24px auto;
+    max-width: 860px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: #fcd34d;
+  }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    background: #0f172a;
+    border-bottom: 1px solid #334155;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header h2 { font-size: 15px; font-weight: 700; color: #e2e8f0; }
+  .card-header p { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .card-body { padding: 24px; }
+
+  label { font-size: 13px; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 5px; }
+  input[type="text"], input[type="email"], select, textarea {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #e2e8f0;
+    font-family: inherit;
+    transition: border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+  select option { background: #1e293b; }
+
+  .form-grid { display: grid; gap: 16px; }
+  .two-col { grid-template-columns: 1fr 1fr; }
+  .three-col { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group { display: flex; flex-direction: column; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .btn-primary { background: #3b82f6; color: #fff; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-primary:disabled { background: #1d4ed8; opacity: 0.6; cursor: not-allowed; }
+  .btn-green { background: #059669; color: #fff; }
+  .btn-green:hover { background: #047857; }
+  .btn-yellow { background: #f59e0b; color: #1a1a2e; }
+  .btn-yellow:hover { background: #d97706; }
+  .btn-ghost { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .btn-ghost:hover { background: #334155; }
+
+  .test-scenario {
+    border: 1px solid #334155;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .test-scenario-header {
+    background: #0f172a;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .test-scenario-title { font-size: 14px; font-weight: 700; color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+  .test-scenario-body { padding: 16px 18px; font-size: 13px; color: #94a3b8; line-height: 1.7; display: none; }
+  .test-scenario-body.open { display: block; }
+
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-pending { background: #64748b; }
+  .dot-running { background: #f59e0b; animation: pulse 1.5s infinite; }
+  .dot-pass { background: #22c55e; }
+  .dot-fail { background: #ef4444; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .test-log {
+    background: #0f172a;
+    border: 1px solid #1e3a5f;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: monospace;
+    font-size: 12.5px;
+    color: #94a3b8;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 16px;
+    line-height: 1.8;
+  }
+  .log-time { color: #475569; }
+  .log-ok { color: #22c55e; }
+  .log-warn { color: #f59e0b; }
+  .log-err { color: #ef4444; }
+  .log-info { color: #38bdf8; }
+
+  .email-preview {
+    background: #0f172a;
+    border: 1px solid #1e3a5f;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 14px;
+  }
+  .email-preview-bar {
+    background: #1e293b;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #64748b;
+    border-bottom: 1px solid #1e3a5f;
+    display: flex;
+    gap: 16px;
+  }
+  .email-preview-bar span strong { color: #94a3b8; }
+  .email-preview iframe {
+    width: 100%;
+    height: 440px;
+    border: none;
+    background: #fff;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .chip-blue { background: #1e3a5f; color: #60a5fa; }
+  .chip-green { background: #14532d; color: #4ade80; }
+  .chip-yellow { background: #451a03; color: #fbbf24; }
+  .chip-red { background: #450a0a; color: #f87171; }
+
+  .divider { height: 1px; background: #1e3a5f; margin: 20px 0; }
+
+  .result-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #1e293b;
+    font-size: 13px;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-label { flex: 1; color: #94a3b8; }
+  .result-value { color: #e2e8f0; font-weight: 500; }
+
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width:640px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">Go<span>HighLevel</span></div>
+    <div class="beta-tag">🧪 BETA</div>
+  </div>
+  <div class="header-right">Agent Testing Sandbox · <a href="/" style="color:#60a5fa;text-decoration:none;">← Live Form</a></div>
+</div>
+
+<div class="hero">
+  <h1>🧪 Agent Beta Testing Sandbox</h1>
+  <p>Test the entire porting flow end-to-end with your own email. All emails route to test addresses and are clearly tagged <strong>[BETA TEST]</strong>. No real port requests are submitted to carriers.</p>
+</div>
+
+<div class="main">
+
+  <div class="warning-banner">
+    <div style="font-size:20px;flex-shrink:0">⚠️</div>
+    <div>
+      <strong>INTERNAL USE ONLY.</strong> This page is for GHL support agents to verify the system before going live.
+      All submissions in beta mode are flagged and email subjects are prefixed with <strong>[BETA TEST]</strong>.
+      Do not share this URL with clients. The live form is at <strong>/</strong>.
+    </div>
+  </div>
+
+  <!-- ── SECTION 1: AGENT CONFIG ─────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>👤 Your Agent Info</h2>
+        <p>Emails from the test submission will go to these addresses</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid two-col">
+        <div class="form-group">
+          <label>Your Name (Agent)</label>
+          <input type="text" id="agentName" placeholder="e.g. Jamaur Brown" />
+        </div>
+        <div class="form-group">
+          <label>Your Email (will receive test LOA + all status emails)</label>
+          <input type="email" id="agentEmail" placeholder="you@gohighlevel.com" />
+        </div>
+      </div>
+      <div style="margin-top:14px;font-size:12.5px;color:#475569;line-height:1.7;">
+        📬 <strong style="color:#64748b;">migration@leadconnectorhq.com</strong> will always be auto-CC'd on all test emails.
+        Enter a second CC below if needed.
+      </div>
+      <div class="form-grid two-col" style="margin-top:12px">
+        <div class="form-group">
+          <label>Extra CC (optional)</label>
+          <input type="email" id="agentCc" placeholder="colleague@gohighlevel.com" />
+        </div>
+        <div class="form-group">
+          <label>BCC (optional)</label>
+          <input type="email" id="agentBcc" placeholder="records@gohighlevel.com" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: TEST SCENARIOS ─────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>🎯 Test Scenarios</h2>
+        <p>Click a scenario to run it — each fires real emails to your address</p>
+      </div>
+      <button class="btn btn-ghost" onclick="clearLog()">Clear Log</button>
+    </div>
+    <div class="card-body">
+
+      <!-- Scenario A -->
+      <div class="test-scenario">
+        <div class="test-scenario-header" onclick="toggleScenario('a')">
+          <div class="test-scenario-title">
+            <div class="status-dot dot-pending" id="dot-a"></div>
+            🏠 Scenario A — Individual US Local Port (Happy Path)
+          </div>
+          <span class="chip chip-blue">Recommended First</span>
+        </div>
+        <div class="test-scenario-body" id="body-a">
+          <p>Simulates a typical residential US local number port. Tests the full happy path:<br/>
+          <strong>Submit → Confirmation Email → LOA Email → Submitted to Carrier → FOC Date → Port Complete</strong></p>
+          <p style="margin-top:10px;color:#475569;">Uses test number: +13125559960 · Individual account · Illinois address</p>
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="runScenario('a')">▶ Run Scenario A</button>
+            <button class="btn btn-ghost" onclick="previewEmails('a')">👁 Preview Emails</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario B -->
+      <div class="test-scenario">
+        <div class="test-scenario-header" onclick="toggleScenario('b')">
+          <div class="test-scenario-title">
+            <div class="status-dot dot-pending" id="dot-b"></div>
+            🏢 Scenario B — Business Account + Wireless Number
+          </div>
+          <span class="chip chip-blue">Tests Business Name Field</span>
+        </div>
+        <div class="test-scenario-body" id="body-b">
+          <p>Simulates a business account porting a wireless/mobile number. Tests PIN/account number fields and business name display in emails.</p>
+          <p style="margin-top:10px;color:#475569;">Uses test number: +13125550001 · Business account · "Jones Marketing LLC"</p>
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="runScenario('b')">▶ Run Scenario B</button>
+            <button class="btn btn-ghost" onclick="previewEmails('b')">👁 Preview Emails</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario C -->
+      <div class="test-scenario">
+        <div class="test-scenario-header" onclick="toggleScenario('c')">
+          <div class="test-scenario-title">
+            <div class="status-dot dot-pending" id="dot-c"></div>
+            ❌ Scenario C — Port Rejection Flow
+          </div>
+          <span class="chip chip-red">Tests Rejection Email</span>
+        </div>
+        <div class="test-scenario-body" id="body-c">
+          <p>Simulates a carrier rejection. Tests the rejection email template, fix instructions, and resubmit flow. Sends the full rejection email with reason code and "Fix & Resubmit" CTA.</p>
+          <p style="margin-top:10px;color:#475569;">Rejection reason: NAME_MISMATCH — "The name on your request doesn't match carrier records."</p>
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="runScenario('c')">▶ Run Scenario C</button>
+            <button class="btn btn-ghost" onclick="previewEmails('c')">👁 Preview Emails</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario D -->
+      <div class="test-scenario">
+        <div class="test-scenario-header" onclick="toggleScenario('d')">
+          <div class="test-scenario-title">
+            <div class="status-dot dot-pending" id="dot-d"></div>
+            🌐 Scenario D — International / Toll-Free Redirect
+          </div>
+          <span class="chip chip-yellow">Tests Manual Lane</span>
+        </div>
+        <div class="test-scenario-body" id="body-d">
+          <p>Tests what happens when a toll-free (800/888) or international number is entered.
+          The tool should detect it, block self-serve submission, and redirect to the Twilio International Porting form.</p>
+          <p style="margin-top:10px;color:#475569;">Test number: +18885550001 (toll-free) → redirects to Twilio's international form</p>
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="runScenario('d')">▶ Run Scenario D</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario E -->
+      <div class="test-scenario">
+        <div class="test-scenario-header" onclick="toggleScenario('e')">
+          <div class="test-scenario-title">
+            <div class="status-dot dot-pending" id="dot-e"></div>
+            🔁 Scenario E — Full Webhook Sequence (All 6 Status Emails)
+          </div>
+          <span class="chip chip-green">Full Pipeline</span>
+        </div>
+        <div class="test-scenario-body" id="body-e">
+          <p>Fires all 6 webhook status emails in sequence with a 3-second delay between each, so you can verify every template looks correct in your inbox:</p>
+          <ol style="margin:10px 0 0 20px;line-height:2.2;">
+            <li>✅ Submission Confirmation</li>
+            <li>✍️ LOA Ready to Sign</li>
+            <li>📤 Submitted to Carrier</li>
+            <li>📅 FOC Date Confirmed</li>
+            <li>❌ Port Rejected (with fix instructions)</li>
+            <li>🎉 Port Complete</li>
+          </ol>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-green" onclick="runScenario('e')">▶ Run Full Email Sequence</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Log -->
+      <div class="test-log" id="test-log">
+        <span class="log-info">AutoPort Beta Test Console — ready.</span><br/>
+        <span class="log-time">Enter your agent email above, then click a scenario to begin.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: LIVE FORM IN BETA MODE ───────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>🖥️ Open Live Form in Beta Mode</h2>
+        <p>Use the real 5-step form — but wired to your test email and clearly tagged as BETA</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13.5px;color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+        This opens the full client-facing form pre-loaded in beta mode. Every submission will:
+        send emails to <strong style="color:#e2e8f0;">your agent email</strong> (entered above),
+        auto-CC <strong style="color:#e2e8f0;">migration@leadconnectorhq.com</strong>,
+        and NOT submit a real port request to Twilio.
+      </p>
+      <button class="btn btn-yellow" onclick="openBetaForm()">🚀 Open Live Form (Beta Mode)</button>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: EMAIL PREVIEW ────────────────────── -->
+  <div class="card" id="email-preview-card" style="display:none">
+    <div class="card-header">
+      <div>
+        <h2>👁️ Email Template Preview</h2>
+        <p id="preview-title">—</p>
+      </div>
+      <button class="btn btn-ghost" onclick="closePreview()">✕ Close</button>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;" id="preview-tabs"></div>
+      <div class="email-preview">
+        <div class="email-preview-bar">
+          <span><strong>To:</strong> <span id="prev-to">—</span></span>
+          <span><strong>CC:</strong> migration@leadconnectorhq.com</span>
+          <span><strong>Subject:</strong> <span id="prev-subject">—</span></span>
+        </div>
+        <iframe id="preview-frame" src="about:blank"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5: SYSTEM STATUS ────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>⚙️ System Status Check</h2>
+        <p>Verify backend, Twilio connection, and email config are all working</p>
+      </div>
+      <button class="btn btn-primary" onclick="runHealthCheck()" id="btn-health">Run Check</button>
+    </div>
+    <div class="card-body" id="health-results">
+      <p style="font-size:13px;color:#475569;">Click "Run Check" to test connectivity.</p>
+    </div>
+  </div>
+
+  <!-- ── SECTION 6: INTERNATIONAL PORTING ────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>🌐 International & Toll-Free Porting</h2>
+        <p>These require Twilio's manual form — the self-serve tool auto-redirects here</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13.5px;color:#94a3b8;line-height:1.7;margin-bottom:16px;">
+        Twilio's Porting API does not support toll-free (800/888/etc.) or international numbers.
+        When a client enters one of those numbers, the form will automatically show this message and redirect them below.
+      </p>
+      <div style="background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:18px;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:#f59e0b;margin-bottom:8px;">🔔 What clients see for toll-free/international:</div>
+        <div style="background:#1e293b;border-radius:8px;padding:14px;font-size:13px;color:#94a3b8;line-height:1.6;">
+          "This number appears to be a <strong style="color:#fbbf24;">toll-free or international</strong> number.
+          Our self-service tool supports US local and wireless numbers only.
+          Please use Twilio's international porting form below — our support team will assist."
+          <br/><br/>
+          <a href="https://twlo.my.salesforce-sites.com/InternationalPorting" target="_blank"
+            style="display:inline-block;background:#3b82f6;color:#fff;padding:10px 18px;border-radius:8px;font-weight:700;text-decoration:none;font-size:13px;">
+            → Open Twilio International Porting Form
+          </a>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#475569;">Direct link: <a href="https://twlo.my.salesforce-sites.com/InternationalPorting" target="_blank" style="color:#60a5fa;">https://twlo.my.salesforce-sites.com/InternationalPorting</a></p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+const API_BASE = '/api/porting';
+const INTL_PORTING_URL = 'https://twlo.my.salesforce-sites.com/InternationalPorting';
+
+// ── SCENARIO DATA ─────────────────────────────────────
+const SCENARIOS = {
+  a: {
+    name: 'Individual US Local Port',
+    customerName: 'Derek Jones',
+    customerType: 'individual',
+    phoneNumbers: [{ number: '+13125559960', type: 'LOCAL' }],
+    emails: ['submissionConfirmation','loaReadyToSign','submittedToCarrier','focDateConfirmed','portCompleted'],
+  },
+  b: {
+    name: 'Business Wireless Port',
+    customerName: 'Derek Jones',
+    businessName: 'Jones Marketing LLC',
+    customerType: 'business',
+    phoneNumbers: [{ number: '+13125550001', type: 'MOBILE' }],
+    emails: ['submissionConfirmation','loaReadyToSign','submittedToCarrier','portCompleted'],
+  },
+  c: {
+    name: 'Port Rejection',
+    customerName: 'Derek Jones',
+    customerType: 'individual',
+    phoneNumbers: [{ number: '+13125550002', type: 'LOCAL' }],
+    emails: ['submissionConfirmation','portRejected'],
+    rejectionReason: 'The name on the account does not match the authorized representative name.',
+    rejectionCode: 'NAME_MISMATCH',
+  },
+  d: {
+    name: 'Toll-Free Redirect',
+    phoneNumbers: [{ number: '+18885550001', type: 'TOLL_FREE' }],
+  },
+  e: {
+    name: 'Full Email Sequence',
+    customerName: 'Derek Jones',
+    customerType: 'individual',
+    phoneNumbers: [{ number: '+13125559999', type: 'LOCAL' }],
+    emails: ['submissionConfirmation','loaReadyToSign','submittedToCarrier','focDateConfirmed','portRejected','portCompleted'],
+    rejectionReason: 'Address mismatch — does not match carrier records.',
+    rejectionCode: 'ADDRESS_MISMATCH',
+  },
+};
+
+// ── LOG ───────────────────────────────────────────────
+function log(msg, type = 'info') {
+  const el = document.getElementById('test-log');
+  const time = new Date().toLocaleTimeString();
+  el.innerHTML += `\n<span class="log-time">[${time}]</span> <span class="log-${type}">${msg}</span>`;
+  el.scrollTop = el.scrollHeight;
+}
+function clearLog() {
+  document.getElementById('test-log').innerHTML = '<span class="log-info">Log cleared.</span>';
+}
+
+// ── TOGGLE SCENARIO ────────────────────────────────────
+function toggleScenario(id) {
+  const body = document.getElementById(`body-${id}`);
+  body.classList.toggle('open');
+}
+
+// ── GET AGENT INPUTS ───────────────────────────────────
+function getAgentInputs() {
+  const email = document.getElementById('agentEmail').value.trim();
+  const name  = document.getElementById('agentName').value.trim() || 'Beta Tester';
+  const cc    = document.getElementById('agentCc').value.trim();
+  const bcc   = document.getElementById('agentBcc').value.trim();
+  if (!email) {
+    alert('Please enter your agent email first (top of the page).');
+    return null;
+  }
+  return { email, name, cc, bcc };
+}
+
+// ── RUN SCENARIO ──────────────────────────────────────
+async function runScenario(id) {
+  const agent = getAgentInputs();
+  if (!agent) return;
+
+  const scenario = SCENARIOS[id];
+  const dot = document.getElementById(`dot-${id}`);
+
+  // Special: Toll-free redirect test
+  if (id === 'd') {
+    dot.className = 'status-dot dot-pass';
+    log(`✓ Scenario D: Toll-free number detected → would redirect to Twilio International Porting form`, 'ok');
+    log(`  URL: ${INTL_PORTING_URL}`, 'info');
+    log(`  Opening international porting form in new tab...`, 'warn');
+    window.open(INTL_PORTING_URL, '_blank');
+    return;
+  }
+
+  dot.className = 'status-dot dot-running';
+  log(`▶ Running Scenario ${id.toUpperCase()}: ${scenario.name}...`, 'info');
+  log(`  Sending to: ${agent.email} (CC: migration@leadconnectorhq.com${agent.cc ? ', '+agent.cc : ''})`, 'info');
+
+  const portSid = 'KW' + Math.random().toString(36).substr(2,20).toUpperCase() + 'TEST';
+  const emails  = scenario.emails || [];
+  let allOk = true;
+
+  for (let i = 0; i < emails.length; i++) {
+    const emailType = emails[i];
+    log(`  [${i+1}/${emails.length}] Sending "${emailType}"...`, 'info');
+
+    try {
+      const res = await fetch(`${API_BASE}/beta/send-test-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailType,
+          to:    agent.email,
+          cc:    agent.cc  ? [agent.cc]  : [],
+          bcc:   agent.bcc ? [agent.bcc] : [],
+          portInRequestSid: portSid,
+          customerName:     scenario.customerName || agent.name,
+          businessName:     scenario.businessName || null,
+          phoneNumbers:     scenario.phoneNumbers || [],
+          rejectionReason:  scenario.rejectionReason || null,
+          rejectionCode:    scenario.rejectionCode || null,
+          isBeta: true,
+        }),
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        log(`    ✓ "${emailType}" sent via ${result.provider || 'server'}`, 'ok');
+      } else {
+        log(`    ✗ "${emailType}" failed: ${result.error}`, 'err');
+        allOk = false;
+      }
+    } catch (err) {
+      log(`    ✗ Network error for "${emailType}": ${err.message}`, 'err');
+      log(`    ℹ If backend is not running, emails log to server console`, 'warn');
+      allOk = false;
+    }
+
+    // Small delay between emails so they arrive in order
+    if (i < emails.length - 1) {
+      await new Promise(r => setTimeout(r, id === 'e' ? 2500 : 400));
+    }
+  }
+
+  dot.className = allOk ? 'status-dot dot-pass' : 'status-dot dot-fail';
+  log(allOk
+    ? `✅ Scenario ${id.toUpperCase()} complete — check ${agent.email}`
+    : `⚠️ Scenario ${id.toUpperCase()} finished with errors — check log above`, allOk ? 'ok' : 'warn');
+}
+
+// ── PREVIEW EMAILS ─────────────────────────────────────
+function previewEmails(id) {
+  const scenario = SCENARIOS[id];
+  if (!scenario || !scenario.emails) return;
+
+  const card = document.getElementById('email-preview-card');
+  card.style.display = 'block';
+  document.getElementById('preview-title').textContent = `Scenario ${id.toUpperCase()}: ${scenario.name}`;
+
+  const tabs = document.getElementById('preview-tabs');
+  tabs.innerHTML = '';
+  scenario.emails.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-ghost';
+    btn.style.fontSize = '12px';
+    btn.style.padding = '6px 14px';
+    btn.textContent = t;
+    btn.onclick = () => loadEmailPreview(t, scenario, btn);
+    tabs.appendChild(btn);
+    if (i === 0) loadEmailPreview(t, scenario, btn);
+  });
+
+  card.scrollIntoView({ behavior: 'smooth' });
+}
+
+function loadEmailPreview(emailType, scenario, btn) {
+  document.querySelectorAll('#preview-tabs button').forEach(b => b.style.borderColor = '#334155');
+  if (btn) btn.style.borderColor = '#3b82f6';
+
+  const names = (scenario.phoneNumbers || []).map(n => n.number).join(', ');
+  document.getElementById('prev-to').textContent = document.getElementById('agentEmail').value || 'your@email.com';
+
+  const subjectMap = {
+    submissionConfirmation: `[BETA TEST] ✅ Port Request Received — ${names}`,
+    loaReadyToSign:         `[BETA TEST] ✍️ Action Required: Sign Your Port LOA — ${names}`,
+    submittedToCarrier:     `[BETA TEST] 📤 Port Submitted to Carrier — ${names}`,
+    focDateConfirmed:       `[BETA TEST] 📅 Port Date Confirmed — ${names}`,
+    portRejected:           `[BETA TEST] ❌ Port Request Rejected — Action Required for ${names}`,
+    portCompleted:          `[BETA TEST] 🎉 Port Complete! Your Number is Live — ${names}`,
+  };
+  document.getElementById('prev-subject').textContent = subjectMap[emailType] || emailType;
+
+  // Load preview from backend
+  const frame = document.getElementById('preview-frame');
+  const params = new URLSearchParams({
+    emailType,
+    customerName: scenario.customerName || 'Test Agent',
+    numbers: names,
+    portSid: 'KWTEST' + Math.random().toString(36).substr(2,8).toUpperCase(),
+    rejectionReason: scenario.rejectionReason || '',
+    rejectionCode: scenario.rejectionCode || '',
+  });
+  frame.src = `/api/porting/beta/preview-email?${params}`;
+}
+
+function closePreview() {
+  document.getElementById('email-preview-card').style.display = 'none';
+}
+
+// ── OPEN BETA FORM ─────────────────────────────────────
+function openBetaForm() {
+  const agent = getAgentInputs();
+  if (!agent) return;
+  const params = new URLSearchParams({
+    beta: '1',
+    agentEmail: agent.email,
+    cc: agent.cc || '',
+    bcc: agent.bcc || '',
+  });
+  window.open(`/?${params}`, '_blank');
+}
+
+// ── HEALTH CHECK ──────────────────────────────────────
+async function runHealthCheck() {
+  const btn = document.getElementById('btn-health');
+  btn.innerHTML = '<div class="spinner"></div> Checking…';
+  btn.disabled = true;
+
+  const results = document.getElementById('health-results');
+  results.innerHTML = '';
+
+  const checks = [
+    { label: 'Backend API',           url: '/health' },
+    { label: 'Eligibility Endpoint',  url: '/api/porting/eligibility', method: 'POST', body: { phoneNumbers: ['+13125559960'] } },
+  ];
+
+  let allOk = true;
+  for (const check of checks) {
+    try {
+      const opts = check.method === 'POST'
+        ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(check.body) }
+        : {};
+      const res = await fetch(check.url, opts);
+      const json = await res.json();
+      const ok = res.ok;
+      if (!ok) allOk = false;
+
+      results.innerHTML += `
+        <div class="result-row">
+          <div class="status-dot ${ok ? 'dot-pass' : 'dot-fail'}"></div>
+          <div class="result-label">${check.label} <span style="font-family:monospace;font-size:11px;color:#475569;">${check.url}</span></div>
+          <div class="result-value"><span class="chip ${ok ? 'chip-green' : 'chip-red'}">${ok ? '✓ OK' : '✗ FAIL'} ${res.status}</span></div>
+        </div>`;
+
+      if (check.url === '/health' && json.env) {
+        results.innerHTML += `
+          <div class="result-row" style="padding-left:24px">
+            <div class="status-dot ${json.env.twilioConfigured ? 'dot-pass' : 'dot-fail'}"></div>
+            <div class="result-label">Twilio credentials configured</div>
+            <div class="result-value"><span class="chip ${json.env.twilioConfigured ? 'chip-green' : 'chip-red'}">${json.env.twilioConfigured ? '✓ YES' : '✗ NOT SET'}</span></div>
+          </div>
+          <div class="result-row" style="padding-left:24px">
+            <div class="status-dot ${json.env.emailConfigured ? 'dot-pass' : 'dot-fail'}"></div>
+            <div class="result-label">Email provider configured (SendGrid/Resend)</div>
+            <div class="result-value"><span class="chip ${json.env.emailConfigured ? 'chip-green' : 'chip-yellow'}">${json.env.emailConfigured ? '✓ YES' : '⚠ DEV MODE (console only)'}</span></div>
+          </div>`;
+      }
+    } catch (err) {
+      allOk = false;
+      results.innerHTML += `
+        <div class="result-row">
+          <div class="status-dot dot-fail"></div>
+          <div class="result-label">${check.label}</div>
+          <div class="result-value"><span class="chip chip-red">✗ ERROR: ${err.message}</span></div>
+        </div>`;
+    }
+  }
+
+  results.innerHTML += `<div class="divider"></div><div style="font-size:13px;color:${allOk ? '#4ade80' : '#f59e0b'};">${allOk ? '✅ All checks passed — system is ready!' : '⚠️ Some checks failed. Review above and check Vercel env vars.'}</div>`;
+
+  btn.innerHTML = 'Run Check';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
