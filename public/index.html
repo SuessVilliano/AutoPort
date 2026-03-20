@@ -497,6 +497,81 @@
     .batch-loa-label { font-size: 13px; font-weight: 600; color: #166534; }
     .batch-loa-desc { font-size: 11px; color: #6b7280; margin-top: 2px; }
 
+    /* ─── CHAT TOGGLE BUTTON ─────────────────────────────── */
+    .btn-chat-toggle {
+      background: #f59e0b; color: #1a1a2e; border: none;
+      border-radius: 20px; padding: 8px 18px; font-size: 13px;
+      font-weight: 700; cursor: pointer; font-family: inherit;
+      transition: all .2s; animation: pulse-gold 2s infinite;
+    }
+    .btn-chat-toggle:hover { background: #fbbf24; transform: scale(1.05); }
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+    }
+
+    /* ─── CHAT PANEL ─────────────────────────────────────── */
+    .chat-panel {
+      position: fixed; right: 20px; bottom: 20px; top: 70px;
+      width: 420px; background: #fff; border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3); z-index: 1000;
+      display: flex; flex-direction: column; overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, #1e3a5f, #2563eb);
+      padding: 14px 18px; color: #fff; display: flex;
+      align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .chat-msg { display: flex; gap: 8px; }
+    .chat-msg.user { justify-content: flex-end; }
+    .chat-bubble {
+      max-width: 85%; padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .chat-msg.assistant .chat-bubble {
+      background: #f3f4f6; color: #111; border-bottom-left-radius: 4px;
+    }
+    .chat-msg.user .chat-bubble {
+      background: #2563eb; color: #fff; border-bottom-right-radius: 4px;
+    }
+    .chat-input-wrap {
+      border-top: 1px solid #e5e7eb; padding: 12px;
+      flex-shrink: 0; background: #f9fafb;
+    }
+    .chat-input {
+      flex: 1; border: 1px solid #d1d5db; border-radius: 8px;
+      padding: 8px 12px; font-size: 13px; resize: none;
+      font-family: inherit; width: 100%;
+    }
+    .chat-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+    .chat-upload-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 8px;
+      background: #f3f4f6; cursor: pointer; font-size: 18px;
+      border: 1px solid #d1d5db; align-self: flex-end; transition: all .2s;
+    }
+    .chat-upload-btn:hover { background: #e5e7eb; }
+    .chat-file-preview {
+      display: flex; align-items: center; gap: 8px;
+      background: #eff6ff; padding: 6px 12px; border-radius: 6px;
+      font-size: 12px; color: #1d4ed8; margin-bottom: 8px;
+    }
+    .chat-action-btn {
+      display: inline-block; margin-top: 8px; padding: 5px 12px;
+      background: #2563eb; color: #fff; border: none; border-radius: 6px;
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .chat-action-btn:hover { background: #1d4ed8; }
+
+    @media (max-width: 640px) {
+      .chat-panel { right: 0; left: 0; bottom: 0; top: 60px; width: auto; border-radius: 16px 16px 0 0; }
+    }
+
     /* ─── CHECKBOX ────────────────────────────────────────── */
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
     .checkbox-item {
@@ -519,9 +594,43 @@
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">Go<span>HighLevel</span></div>
-  <div class="nav-badge">Phone Porting</div>
+  <div class="nav-logo">Auto<span>Port</span></div>
+  <div class="nav-badge">Internal Agent Tool</div>
+  <div style="flex:1"></div>
+  <button class="btn-chat-toggle" id="btn-chat-toggle" onclick="toggleChat()">💬 AI Assistant</button>
 </nav>
+
+<!-- FLOATING CHAT PANEL -->
+<div class="chat-panel" id="chat-panel" style="display:none">
+  <div class="chat-header">
+    <span style="font-weight:700">🤖 AutoPort AI</span>
+    <span style="font-size:11px;color:#93c5fd">Paste tickets, ask questions, upload files</span>
+    <button onclick="toggleChat()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;margin-left:auto">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-msg assistant">
+      <div class="chat-bubble">Hey! I'm your porting assistant. You can:<br>
+      • <strong>Paste a full ticket</strong> and I'll extract all porting details<br>
+      • <strong>Ask me anything</strong> about porting, rejections, timelines<br>
+      • <strong>Upload a CSV or bill</strong> and I'll process it<br>
+      • Say <strong>"fill form"</strong> after I extract info to auto-populate the form</div>
+    </div>
+  </div>
+  <div class="chat-input-wrap">
+    <div class="chat-file-preview" id="chat-file-preview" style="display:none">
+      <span id="chat-file-name"></span>
+      <button onclick="clearChatFile()" style="background:none;border:none;color:#dc2626;cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <label class="chat-upload-btn" title="Upload file">
+        📎
+        <input type="file" id="chat-file-input" onchange="handleChatFile(this)" style="display:none" accept=".pdf,.csv,.txt,.png,.jpg,.jpeg" />
+      </label>
+      <textarea class="chat-input" id="chat-input" placeholder="Paste a ticket, ask a question, or describe what you need..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage()}"></textarea>
+      <button class="btn btn-primary" onclick="sendChatMessage()" style="padding:8px 14px;align-self:flex-end">Send</button>
+    </div>
+  </div>
+</div>
 
 <!-- PROGRESS STEPS -->
 <div class="progress-wrap">
@@ -557,10 +666,27 @@
       </div>
       <div class="card-body">
 
+        <!-- SMART PASTE ZONE -->
+        <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:10px;padding:20px;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:24px">🧠</span>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#fff">Smart Paste — Drop a full ticket here</div>
+              <div style="font-size:12px;color:#93c5fd">AI will extract name, address, phone numbers, carrier, account #, PIN — everything</div>
+            </div>
+          </div>
+          <textarea id="smart-paste-input" placeholder="Paste the full ticket/email content here... &#10;&#10;Example: 'Hi, I need to port my number (312) 588-9960 from AT&T. My name is Derek Jones, account #445566, PIN 1234. Address: 1803 Great Falls Dr, Plainfield IL 60586. Business: Jones Marketing LLC'" style="width:100%;min-height:100px;border:2px solid rgba(255,255,255,0.3);border-radius:8px;padding:12px;font-size:13px;background:rgba(255,255,255,0.1);color:#fff;resize:vertical;font-family:inherit" onfocus="this.style.borderColor='#f59e0b'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'"></textarea>
+          <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+            <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700" onclick="smartExtract()" id="btn-smart-extract">⚡ Extract Details</button>
+            <span id="smart-paste-status" style="font-size:12px;color:#93c5fd"></span>
+          </div>
+          <div id="smart-paste-results" style="display:none;margin-top:14px;background:rgba(255,255,255,0.95);border-radius:8px;padding:16px;color:#111"></div>
+        </div>
+
         <div class="alert alert-info">
           <div class="alert-icon">ℹ️</div>
           <div>
-            <strong>Before you begin:</strong> This tool supports US local and wireless (non-toll-free) numbers. Toll-free or international numbers require a separate process — our support team will help. Keep your numbers active with your current carrier until the port completes.
+            <strong>Quick tip:</strong> Paste a ticket above to auto-fill everything, upload a CSV for bulk numbers, or enter numbers manually below.
           </div>
         </div>
 
@@ -676,6 +802,23 @@
           <label>Email Address <span class="req">*</span> <span class="hint">(LOA will be sent here)</span></label>
           <input type="email" id="email" placeholder="derek@example.com" />
           <div class="field-error" id="err-email" style="display:none"></div>
+        </div>
+
+        <!-- Twilio / GHL Account Info -->
+        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:12px;">🔑 Twilio / GHL Account</div>
+          <div class="form-grid two-col">
+            <div class="form-group">
+              <label>Account SID <span class="hint">(Twilio subaccount)</span></label>
+              <input type="text" id="accountSid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Leave blank to use default master account</div>
+            </div>
+            <div class="form-group">
+              <label>GHL Location ID <span class="hint">(optional)</span></label>
+              <input type="text" id="locationId" placeholder="location_xxxxxxxx" />
+              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">For webhook routing after port completes</div>
+            </div>
+          </div>
         </div>
 
         <!-- CC / BCC Emails -->
@@ -900,6 +1043,14 @@
               <label>Service Address</label>
               <p id="rev-address">—</p>
             </div>
+            <div class="review-item">
+              <label>Account SID</label>
+              <p id="rev-sid">Default (master)</p>
+            </div>
+            <div class="review-item">
+              <label>Location ID</label>
+              <p id="rev-location">—</p>
+            </div>
           </div>
         </div>
 
@@ -922,6 +1073,14 @@
           </div>
         </div>
 
+        <!-- AI VALIDATION CHECK -->
+        <div id="ai-validation" style="display:none;margin-top:20px"></div>
+        <div style="text-align:center;margin-top:16px">
+          <button class="btn btn-outline" onclick="runAIValidation()" id="btn-ai-validate" style="border-color:#f59e0b;color:#92400e">
+            🤖 Run AI Pre-Submit Check
+          </button>
+        </div>
+
         <div class="alert alert-warn" style="margin-top:20px">
           <div class="alert-icon">⏱️</div>
           <div>
@@ -929,11 +1088,14 @@
           </div>
         </div>
 
-        <div class="form-actions">
+        <div class="form-actions" style="flex-wrap:wrap;gap:10px">
           <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
-          <button class="btn btn-green" onclick="submitPortRequest()" id="btn-submit">
-            Submit Port Request 🚀
-          </button>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-outline" onclick="generateLOA()" id="btn-loa">📝 Generate LOA PDF</button>
+            <button class="btn btn-green" onclick="submitPortRequest()" id="btn-submit">
+              Submit Port Request 🚀
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1664,7 +1826,13 @@ function buildReview() {
   };
   document.getElementById('rev-loa').textContent = loaLabels[loaMode] || 'Auto-generated by Twilio';
 
-  // Store for submission — includes CC/BCC, businessName, and LOA mode
+  // Account SID and Location ID
+  const acctSid = document.getElementById('accountSid').value.trim();
+  const locId = document.getElementById('locationId').value.trim();
+  document.getElementById('rev-sid').textContent = acctSid || 'Default (master account)';
+  document.getElementById('rev-location').textContent = locId || '—';
+
+  // Store for submission — includes CC/BCC, businessName, LOA mode, account SID, location ID
   portRequestData = {
     customerType: type,
     customerName: `${first} ${last}`,
@@ -1676,9 +1844,13 @@ function buildReview() {
     address: { street, city, state, zip, country: 'US' },
     phoneNumbers: eligibleNumbers.map(n => ({ number: n.number, type: n.type })),
     loaMode: loaMode,
+    accountSid: acctSid || null,
+    locationId: locId || null,
     billingFile: uploadedFiles.bill,
     isBeta: window.IS_BETA_MODE || false,
   };
+
+  logActivity('review_built', `${eligibleNumbers.length} numbers, ${type}, LOA: ${loaMode}`);
 }
 
 // ═══════════════════════════════════════════════════
@@ -1738,6 +1910,393 @@ function startOver() {
     location.reload();
   }
 }
+
+// ═══════════════════════════════════════════════════
+//  SMART PASTE — AI EXTRACTION
+// ═══════════════════════════════════════════════════
+let lastExtracted = null;
+
+async function smartExtract() {
+  const text = document.getElementById('smart-paste-input').value.trim();
+  if (!text || text.length < 10) {
+    document.getElementById('smart-paste-status').textContent = 'Paste more ticket content (at least 10 chars)';
+    return;
+  }
+
+  const btn = document.getElementById('btn-smart-extract');
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(26,26,46,0.3);border-top-color:#1a1a2e;width:14px;height:14px"></div> Extracting…';
+  btn.disabled = true;
+  document.getElementById('smart-paste-status').textContent = '';
+
+  try {
+    const resp = await fetch(`${API_BASE}/extract`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await resp.json();
+    if (!data.success) throw new Error(data.error || 'Extraction failed');
+
+    lastExtracted = data.extracted;
+    renderExtractedResults(data.extracted, data.method);
+  } catch (err) {
+    document.getElementById('smart-paste-status').textContent = 'Error: ' + err.message;
+  } finally {
+    btn.innerHTML = '⚡ Extract Details';
+    btn.disabled = false;
+  }
+}
+
+function renderExtractedResults(ext, method) {
+  const box = document.getElementById('smart-paste-results');
+  box.style.display = 'block';
+
+  const nums = (ext.phone_numbers || []).map(n =>
+    `<tr><td style="padding:4px 8px;font-family:monospace">${n.number}</td>
+     <td style="padding:4px 8px">${n.type || 'LOCAL'}</td>
+     <td style="padding:4px 8px">${n.carrier || '—'}</td>
+     <td style="padding:4px 8px">${n.account_number || '—'}</td>
+     <td style="padding:4px 8px">${n.pin || '—'}</td></tr>`
+  ).join('');
+
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong style="color:#059669">✅ Extracted via ${method}</strong>
+      <button class="btn btn-primary" onclick="applyExtractedToForm()" style="padding:6px 16px;font-size:12px">
+        📋 Auto-Fill Form →
+      </button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:10px">
+      <div><strong>Name:</strong> ${ext.firstName || '?'} ${ext.lastName || '?'}</div>
+      <div><strong>Type:</strong> ${ext.customerType || 'individual'}</div>
+      <div><strong>Business:</strong> ${ext.businessName || '—'}</div>
+      <div><strong>Email:</strong> ${ext.email || '—'}</div>
+      <div style="grid-column:1/-1"><strong>Address:</strong> ${ext.address?.street || '?'}, ${ext.address?.city || '?'}, ${ext.address?.state || '?'} ${ext.address?.zip || '?'}</div>
+    </div>
+    ${ext.phone_numbers?.length ? `
+    <table style="width:100%;font-size:12px;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
+      <tr style="background:#f3f4f6"><th style="padding:4px 8px;text-align:left">Number</th><th style="padding:4px 8px;text-align:left">Type</th><th style="padding:4px 8px;text-align:left">Carrier</th><th style="padding:4px 8px;text-align:left">Account #</th><th style="padding:4px 8px;text-align:left">PIN</th></tr>
+      ${nums}
+    </table>` : ''}
+    ${ext.notes ? `<div style="margin-top:8px;font-size:12px;color:#6b7280"><strong>Notes:</strong> ${ext.notes}</div>` : ''}
+  `;
+}
+
+function applyExtractedToForm() {
+  if (!lastExtracted) return;
+  const ext = lastExtracted;
+
+  // Fill form fields
+  if (ext.firstName) document.getElementById('firstName').value = ext.firstName;
+  if (ext.lastName) document.getElementById('lastName').value = ext.lastName;
+  if (ext.email) document.getElementById('email').value = ext.email;
+  if (ext.businessName) {
+    document.getElementById('businessName').value = ext.businessName;
+    selectType('business');
+  }
+  if (ext.address) {
+    if (ext.address.street) document.getElementById('street').value = ext.address.street;
+    if (ext.address.city) document.getElementById('city').value = ext.address.city;
+    if (ext.address.zip) document.getElementById('zip').value = ext.address.zip;
+    if (ext.address.state) {
+      const stateSelect = document.getElementById('state');
+      for (let opt of stateSelect.options) {
+        if (opt.value.toLowerCase() === ext.address.state.toLowerCase() ||
+            opt.text.toLowerCase() === ext.address.state.toLowerCase()) {
+          stateSelect.value = opt.value;
+          break;
+        }
+      }
+    }
+  }
+
+  // Add phone numbers to eligibleNumbers
+  if (ext.phone_numbers?.length) {
+    eligibleNumbers = ext.phone_numbers.map(n => ({
+      number: n.number,
+      type: n.type || 'LOCAL',
+      name: '',
+      account: n.account_number || '',
+      pin: n.pin || '',
+      carrier: n.carrier || ''
+    }));
+    populateStep2Numbers();
+
+    // Also add to eligibility display
+    const wrap = document.getElementById('eligibility-numbers');
+    wrap.innerHTML = '';
+    eligibleNumbers.forEach((n, i) => {
+      const div = document.createElement('div');
+      div.className = 'number-row';
+      div.id = `elig-row-${i}`;
+      div.innerHTML = `
+        <div class="form-group" style="flex:1">
+          <label>Phone Number</label>
+          <input type="tel" class="elig-num" value="${n.number}" readonly style="background:#f0fdf4;border-color:#86efac" />
+          <div class="field-error" style="display:none"></div>
+        </div>
+        <div class="elig-badge elig-portable" style="margin-bottom:4px">✓ Extracted</div>
+      `;
+      wrap.appendChild(div);
+    });
+    eligRowCount = eligibleNumbers.length;
+  }
+
+  // Log the extraction
+  logActivity('smart_paste', `Extracted: ${ext.firstName} ${ext.lastName}, ${(ext.phone_numbers||[]).length} numbers`);
+
+  // Advance to step 2
+  document.getElementById('step-nav-1').classList.add('done');
+  goToStep(2);
+  updateEligSummary();
+  updateLOAHint();
+}
+
+// ═══════════════════════════════════════════════════
+//  CHAT ASSISTANT
+// ═══════════════════════════════════════════════════
+let chatHistory = [];
+let chatFile = null;
+
+function toggleChat() {
+  const panel = document.getElementById('chat-panel');
+  panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+function handleChatFile(input) {
+  chatFile = input.files[0];
+  if (chatFile) {
+    document.getElementById('chat-file-preview').style.display = 'flex';
+    document.getElementById('chat-file-name').textContent = `📎 ${chatFile.name} (${(chatFile.size/1024).toFixed(1)}KB)`;
+  }
+}
+
+function clearChatFile() {
+  chatFile = null;
+  document.getElementById('chat-file-input').value = '';
+  document.getElementById('chat-file-preview').style.display = 'none';
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const message = input.value.trim();
+  if (!message && !chatFile) return;
+
+  // Show user message
+  addChatBubble('user', message || `📎 ${chatFile.name}`);
+  input.value = '';
+
+  // Show typing indicator
+  const typingId = addChatBubble('assistant', '<em style="color:#9ca3af">Thinking...</em>');
+
+  try {
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('history', JSON.stringify(chatHistory.slice(-10)));
+    if (chatFile) {
+      formData.append('file', chatFile);
+      clearChatFile();
+    }
+
+    const resp = await fetch(`${API_BASE}/chat`, { method: 'POST', body: formData });
+    const data = await resp.json();
+
+    // Remove typing indicator
+    document.getElementById(typingId)?.remove();
+
+    if (data.success) {
+      // Format markdown-like response
+      let reply = data.reply
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>')
+        .replace(/`([^`]+)`/g, '<code style="background:#f3f4f6;padding:1px 4px;border-radius:3px">$1</code>');
+
+      // Check if AI extracted fields and offer auto-fill
+      if (message.length > 100 && data.reply.includes('+1')) {
+        reply += '<br><button class="chat-action-btn" onclick="smartExtract()">⚡ Extract & Auto-Fill Form</button>';
+      }
+
+      addChatBubble('assistant', reply);
+      chatHistory.push({ role: 'user', content: message });
+      chatHistory.push({ role: 'assistant', content: data.reply });
+    } else {
+      addChatBubble('assistant', `<span style="color:#dc2626">Error: ${data.error}</span>`);
+    }
+  } catch (err) {
+    document.getElementById(typingId)?.remove();
+    addChatBubble('assistant', `<span style="color:#dc2626">Connection error: ${err.message}</span>`);
+  }
+}
+
+function addChatBubble(role, html) {
+  const container = document.getElementById('chat-messages');
+  const id = 'msg-' + Date.now();
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.id = id;
+  div.innerHTML = `<div class="chat-bubble">${html}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return id;
+}
+
+// ═══════════════════════════════════════════════════
+//  LOA PDF GENERATION
+// ═══════════════════════════════════════════════════
+async function generateLOA() {
+  const btn = document.getElementById('btn-loa');
+  btn.innerHTML = '⏳ Generating…';
+  btn.disabled = true;
+
+  try {
+    const first = document.getElementById('firstName').value.trim();
+    const last = document.getElementById('lastName').value.trim();
+    const bizName = document.getElementById('businessName').value.trim();
+    const street = document.getElementById('street').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const state = document.getElementById('state').value;
+    const zip = document.getElementById('zip').value.trim();
+
+    if (!first || !last || eligibleNumbers.length === 0) {
+      alert('Please complete name and phone numbers before generating LOA.');
+      return;
+    }
+
+    const resp = await fetch(`${API_BASE}/generate-loa`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: first,
+        lastName: last,
+        businessName: bizName || null,
+        address: { street, city, state, zip },
+        phoneNumbers: eligibleNumbers.map(n => ({
+          number: n.number,
+          carrier: n.carrier || '',
+          account_number: n.account || '',
+          pin: n.pin || ''
+        })),
+        loaMode
+      })
+    });
+
+    if (!resp.ok) throw new Error('LOA generation failed');
+
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `LOA-${first}-${last}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    logActivity('loa_generated', `LOA for ${first} ${last}, ${eligibleNumbers.length} numbers, mode: ${loaMode}`);
+  } catch (err) {
+    alert('LOA generation error: ' + err.message);
+  } finally {
+    btn.innerHTML = '📝 Generate LOA PDF';
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  AI PRE-SUBMIT VALIDATION
+// ═══════════════════════════════════════════════════
+async function runAIValidation() {
+  const btn = document.getElementById('btn-ai-validate');
+  btn.innerHTML = '🤖 Validating…';
+  btn.disabled = true;
+  const box = document.getElementById('ai-validation');
+  box.style.display = 'block';
+  box.innerHTML = '<div style="text-align:center;padding:20px;color:#6b7280">Checking all fields for accuracy...</div>';
+
+  try {
+    const validationPrompt = `You are a porting validation AI. Check this port request for potential rejection issues. Be strict — carriers reject for ANY mismatch.
+
+PORT REQUEST:
+Name: ${portRequestData.customerName || 'MISSING'}
+Type: ${portRequestData.customerType || 'MISSING'}
+Business: ${portRequestData.businessName || 'N/A'}
+Email: ${portRequestData.authorizedRepresentativeEmail || 'MISSING'}
+Address: ${JSON.stringify(portRequestData.address || {})}
+Phone Numbers: ${JSON.stringify(portRequestData.phoneNumbers || [])}
+Account SID: ${document.getElementById('accountSid')?.value || 'default'}
+Location ID: ${document.getElementById('locationId')?.value || 'none'}
+LOA Mode: ${loaMode}
+
+Check for:
+1. Missing required fields
+2. Name format issues (should match carrier records exactly)
+3. Address completeness and format
+4. Phone number format (+1XXXXXXXXXX)
+5. Mixed carriers needing separate LOAs
+6. Any other red flags
+
+Return a JSON array of issues: [{"severity": "error|warning|ok", "field": "fieldName", "message": "description"}]
+If everything looks good, return [{"severity": "ok", "field": "all", "message": "All checks passed"}]`;
+
+    const resp = await fetch(`${API_BASE}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: validationPrompt, history: [] })
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      const jsonMatch = data.reply.match(/\[[\s\S]*\]/);
+      let issues;
+      try {
+        issues = JSON.parse(jsonMatch[0]);
+      } catch {
+        issues = [{ severity: 'warning', field: 'ai', message: data.reply.substring(0, 300) }];
+      }
+
+      const hasErrors = issues.some(i => i.severity === 'error');
+      const hasWarnings = issues.some(i => i.severity === 'warning');
+      const allOk = issues.every(i => i.severity === 'ok');
+
+      box.innerHTML = `
+        <div style="background:${allOk ? '#ecfdf5' : hasErrors ? '#fef2f2' : '#fffbeb'};border:1px solid ${allOk ? '#86efac' : hasErrors ? '#fca5a5' : '#fcd34d'};border-radius:10px;padding:16px">
+          <div style="font-weight:700;font-size:14px;color:${allOk ? '#059669' : hasErrors ? '#dc2626' : '#d97706'};margin-bottom:10px">
+            ${allOk ? '✅ All Pre-Submit Checks Passed' : hasErrors ? '❌ Issues Found — Fix Before Submitting' : '⚠️ Warnings — Review Before Submitting'}
+          </div>
+          ${issues.map(i => `
+            <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:13px">
+              <span>${i.severity === 'error' ? '🔴' : i.severity === 'warning' ? '🟡' : '🟢'}</span>
+              <div><strong>${i.field}:</strong> ${i.message}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      logActivity('ai_validation', `${issues.length} checks: ${hasErrors ? 'ERRORS' : hasWarnings ? 'WARNINGS' : 'PASSED'}`);
+    }
+  } catch (err) {
+    box.innerHTML = `<div class="alert alert-error"><div class="alert-icon">⚠️</div><div>AI validation unavailable: ${err.message}</div></div>`;
+  } finally {
+    btn.innerHTML = '🤖 Run AI Pre-Submit Check';
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  ACTIVITY LOG
+// ═══════════════════════════════════════════════════
+const activityLog = [];
+
+function logActivity(type, detail) {
+  const entry = {
+    timestamp: new Date().toISOString(),
+    type,
+    detail,
+    user: 'agent'
+  };
+  activityLog.push(entry);
+  console.log(`[AutoPort Log] ${type}: ${detail}`);
+}
+
+// Log page load
+logActivity('session_start', `AutoPort internal tool loaded`);
 </script>
 
 </body>
