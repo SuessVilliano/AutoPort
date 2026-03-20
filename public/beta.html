@@ -492,6 +492,152 @@
     </div>
   </div>
 
+  <!-- ── HOW TO USE AUTOPORT ──────────────────────────── -->
+  <div class="card" style="margin-top:28px;">
+    <div class="card-header" style="background:linear-gradient(135deg,#0f766e,#14b8a6);padding:24px 28px;">
+      <h2 style="font-size:20px;font-weight:800;">📖 How to Use AutoPort</h2>
+      <p style="font-size:13px;opacity:0.85;margin-top:4px;">Step-by-step guide for porting phone numbers into GoHighLevel</p>
+    </div>
+    <div class="card-body" style="padding:28px;">
+
+      <div style="display:flex;gap:16px;margin-bottom:20px;">
+        <div style="min-width:36px;height:36px;background:#0d9488;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">1</div>
+        <div>
+          <h4 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:4px;">Check Portability</h4>
+          <p style="font-size:13px;color:#94a3b8;line-height:1.7;">Enter the phone number(s) on the main form. AutoPort calls the Twilio Portability API to verify each number can be ported. You'll see the carrier name, number type (local/mobile/toll-free), and whether it's portable.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:20px;">
+        <div style="min-width:36px;height:36px;background:#0d9488;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">2</div>
+        <div>
+          <h4 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:4px;">Submit Port Request</h4>
+          <p style="font-size:13px;color:#94a3b8;line-height:1.7;">Fill in the customer's carrier account details — account name, account number, PIN, and service address. AutoPort uploads the required documents and creates a Port-In Request via Twilio's API.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:20px;">
+        <div style="min-width:36px;height:36px;background:#0d9488;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">3</div>
+        <div>
+          <h4 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:4px;">Sign the LOA</h4>
+          <p style="font-size:13px;color:#94a3b8;line-height:1.7;">The customer receives an email with a link to sign the Letter of Authorization (LOA). This is required by carriers to authorize the port. Once signed, the port is submitted to the losing carrier.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:20px;">
+        <div style="min-width:36px;height:36px;background:#0d9488;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">4</div>
+        <div>
+          <h4 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:4px;">Track Status via Webhooks</h4>
+          <p style="font-size:13px;color:#94a3b8;line-height:1.7;">Twilio sends real-time webhook updates as the port progresses. AutoPort automatically sends branded emails to the customer at each stage: submitted, FOC date confirmed, completed, or rejected.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:0;">
+        <div style="min-width:36px;height:36px;background:#0d9488;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">5</div>
+        <div>
+          <h4 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:4px;">Handle Rejections</h4>
+          <p style="font-size:13px;color:#94a3b8;line-height:1.7;">If a port is rejected (common — usually an account info mismatch), the customer gets an email with a "Fix & Resubmit" link. They correct the info and AutoPort resubmits automatically.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── RESOURCES & DOCUMENTATION ──────────────────────── -->
+  <div class="card" style="margin-top:28px;">
+    <div class="card-header" style="background:linear-gradient(135deg,#1e40af,#3b82f6);padding:24px 28px;">
+      <h2 style="font-size:20px;font-weight:800;">🔗 Resources & Documentation</h2>
+      <p style="font-size:13px;opacity:0.85;margin-top:4px;">API docs, guides, and reference links</p>
+    </div>
+    <div class="card-body" style="padding:28px;">
+
+      <h4 style="font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px;">Twilio Porting APIs</h4>
+      <div style="display:grid;gap:10px;margin-bottom:24px;">
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">📡</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Porting API Reference</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Create, manage, and track port-in requests programmatically</div>
+          </div>
+        </a>
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api/port-in-phone-number-resource" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">📞</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Port-In Phone Number Resource</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Phone number statuses, updates, and lifecycle management</div>
+          </div>
+        </a>
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api/portability-check" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">✅</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Portability Check API</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Verify if a number can be ported before submitting a request</div>
+          </div>
+        </a>
+      </div>
+
+      <h4 style="font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px;">Webhooks & Status Events</h4>
+      <div style="display:grid;gap:10px;margin-bottom:24px;">
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api/port-in-request-callbacks" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">🔔</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Port-In Webhooks & Callbacks</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Configure webhook URLs to receive real-time port status updates</div>
+          </div>
+        </a>
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api/port-in-request-resource" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">📋</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Port-In Request Resource</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Full reference for creating and managing port-in requests</div>
+          </div>
+        </a>
+      </div>
+
+      <h4 style="font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px;">GoHighLevel & General</h4>
+      <div style="display:grid;gap:10px;">
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/port-overview" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">📚</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Twilio Porting Overview</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Understand the full porting process, timelines, and requirements</div>
+          </div>
+        </a>
+        <a href="https://www.twilio.com/docs/phone-numbers/porting/porting-api/documents-resource" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">📄</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Documents Resource (LOA Upload)</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Upload Letters of Authorization and supporting documents</div>
+          </div>
+        </a>
+        <a href="https://twlo.my.salesforce-sites.com/InternationalPorting" target="_blank"
+          style="display:flex;align-items:center;gap:12px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 18px;text-decoration:none;transition:border-color 0.2s;">
+          <span style="font-size:22px;">🌍</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#f1f5f9;">Twilio International Porting Form</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">For toll-free and international numbers not supported by self-service</div>
+          </div>
+        </a>
+      </div>
+
+      <div style="margin-top:24px;padding:16px;background:#0f172a;border:1px solid #1e293b;border-radius:10px;">
+        <p style="font-size:13px;color:#64748b;line-height:1.7;">
+          <strong style="color:#94a3b8;">AutoPort Webhook URL:</strong>
+          <code style="background:#1e293b;padding:3px 8px;border-radius:4px;color:#fbbf24;font-size:12px;">https://auto-port.vercel.app/api/porting/webhooks/twilio</code>
+          <br/>Configure this in your Twilio console under Phone Numbers → Port In Requests → Webhook URL.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <script>
