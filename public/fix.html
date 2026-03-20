@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fix & Resubmit Port Request | GoHighLevel AutoPort</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; min-height: 100vh; }
+    .nav { background: #1a1a2e; padding: 14px 32px; display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #fff; }
+    .nav-tag { font-size: 11px; background: #dc2626; color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .container { max-width: 680px; margin: 40px auto; padding: 0 20px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
+    .card-header { background: linear-gradient(135deg, #991b1b, #dc2626); padding: 36px; text-align: center; color: #fff; }
+    .card-header h1 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .card-header p { font-size: 14px; opacity: 0.8; }
+    .card-body { padding: 36px; }
+    .alert { border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .alert-red { background: #fef2f2; border: 1px solid #fca5a5; }
+    .alert-red h3 { color: #991b1b; font-size: 15px; margin-bottom: 8px; }
+    .alert-red p { color: #7f1d1d; font-size: 14px; line-height: 1.7; }
+    .alert-blue { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .alert-blue h3 { color: #1d4ed8; font-size: 15px; margin-bottom: 8px; }
+    .alert-blue p, .alert-blue li { color: #1e40af; font-size: 14px; line-height: 1.7; }
+    .alert-blue ul { padding-left: 20px; margin-top: 8px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .form-group .hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-red { background: #dc2626; color: #fff; }
+    .btn-red:hover { background: #b91c1c; }
+    .btn-red:disabled { background: #fca5a5; cursor: not-allowed; }
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 28px 0; }
+    .success-msg { display: none; text-align: center; padding: 40px; }
+    .success-msg .icon { font-size: 64px; margin-bottom: 16px; }
+    .success-msg h2 { font-size: 22px; color: #065f46; margin-bottom: 8px; }
+    .success-msg p { font-size: 14px; color: #6b7280; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-logo">GoHighLevel</div>
+    <span class="nav-tag">Fix Required</span>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div style="font-size:44px;margin-bottom:12px;">🔧</div>
+        <h1>Fix & Resubmit Your Port Request</h1>
+        <p>Correct the information below and resubmit</p>
+      </div>
+
+      <div class="card-body" id="formView">
+        <div class="alert alert-red">
+          <h3>❌ Why was your port rejected?</h3>
+          <p id="rejectionReason">The information you provided didn't match your carrier's records. This is very common and easy to fix. Please review and correct the fields below.</p>
+        </div>
+
+        <div class="alert alert-blue">
+          <h3>🔧 How to get the correct information:</h3>
+          <ul>
+            <li><strong>Account name:</strong> Check your carrier bill or call your carrier — it must match exactly</li>
+            <li><strong>Account number:</strong> Found on your monthly bill or by calling your carrier</li>
+            <li><strong>Service address:</strong> Must match the address your carrier has on file</li>
+            <li><strong>PIN:</strong> Call your carrier to confirm or reset your account PIN</li>
+          </ul>
+        </div>
+
+        <hr class="divider"/>
+
+        <h3 style="font-size:16px;font-weight:700;color:#1e3a5f;margin-bottom:20px;">Corrected Information</h3>
+
+        <div class="form-group">
+          <label>Account Holder Name (exactly as it appears on your carrier account)</label>
+          <input type="text" id="fixName" placeholder="John A. Smith" />
+          <div class="hint">Must match your carrier's records exactly — including middle initials</div>
+        </div>
+
+        <div class="form-group">
+          <label>Carrier Account Number</label>
+          <input type="text" id="fixAccount" placeholder="Found on your bill or by calling your carrier" />
+        </div>
+
+        <div class="form-group">
+          <label>Account PIN / Passcode</label>
+          <input type="text" id="fixPin" placeholder="Your carrier account PIN" />
+          <div class="hint">Call your carrier if you don't know your PIN — they can reset it for you</div>
+        </div>
+
+        <h3 style="font-size:14px;font-weight:700;color:#1e3a5f;margin-bottom:16px;">Service Address (as on carrier account)</h3>
+
+        <div class="form-group">
+          <label>Street Address</label>
+          <input type="text" id="fixStreet" placeholder="123 Main Street" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="fixCity" placeholder="Atlanta" />
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="fixState" placeholder="GA" />
+          </div>
+        </div>
+
+        <div class="form-group" style="max-width:200px;">
+          <label>ZIP Code</label>
+          <input type="text" id="fixZip" placeholder="30301" />
+        </div>
+
+        <hr class="divider"/>
+
+        <button class="btn btn-red" id="resubmitBtn" onclick="resubmit()">
+          🔧 Resubmit Port Request
+        </button>
+      </div>
+
+      <div class="success-msg" id="successView">
+        <div class="icon">✅</div>
+        <h2>Port Request Resubmitted!</h2>
+        <p>Your corrected information has been submitted. We'll send it to your carrier for review. You'll receive an email update once the carrier processes it — typically within 3–5 business days.</p>
+        <div style="margin-top:24px;padding:16px;background:#f0fdf4;border-radius:10px;border:1px solid #86efac;">
+          <p style="font-size:13px;color:#065f46;"><strong>Reminder:</strong> Keep your number active with your current carrier until the port is complete. Do not cancel your service.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Parse rejection reason from URL if provided
+    const params = new URLSearchParams(window.location.search);
+    const reason = params.get('reason');
+    if (reason) document.getElementById('rejectionReason').textContent = reason;
+
+    function resubmit() {
+      const btn = document.getElementById('resubmitBtn');
+      const name = document.getElementById('fixName').value.trim();
+      if (!name) { alert('Please enter the account holder name'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Resubmitting...';
+      setTimeout(() => {
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('successView').style.display = 'block';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

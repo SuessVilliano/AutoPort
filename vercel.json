@@ -24,6 +24,14 @@
       "dest": "/public/beta.html"
     },
     {
+      "src": "/sign-loa(.*)",
+      "dest": "/public/sign-loa.html"
+    },
+    {
+      "src": "/fix/(.*)",
+      "dest": "/public/fix.html"
+    },
+    {
       "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
       "dest": "/public/$1"
     },

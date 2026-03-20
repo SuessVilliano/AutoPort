@@ -426,10 +426,10 @@ app.post('/api/porting/beta/send-test-email', async (req, res) => {
 
     const templateMap = {
       submissionConfirmation: () => templates.submissionConfirmation({ ...baseData, email: to, estimatedDays: '5–15 business days' }),
-      loaReadyToSign:         () => templates.loaReadyToSign({ ...baseData, loaUrl: 'https://autoport.vercel.app/sign-loa-demo' }),
+      loaReadyToSign:         () => templates.loaReadyToSign({ ...baseData, loaUrl: 'https://auto-port.vercel.app/sign-loa' }),
       submittedToCarrier:     () => templates.submittedToCarrier(baseData),
       focDateConfirmed:       () => templates.focDateConfirmed({ ...baseData, focDate: new Date(Date.now() + 7*24*60*60*1000).toISOString() }),
-      portRejected:           () => templates.portRejected({ ...baseData, rejectionReason, rejectionCode, fixUrl: 'https://autoport.vercel.app/fix/demo' }),
+      portRejected:           () => templates.portRejected({ ...baseData, rejectionReason, rejectionCode, fixUrl: 'https://auto-port.vercel.app/fix/demo' }),
       portCompleted:          () => templates.portCompleted({ ...baseData, dashboardUrl: 'https://app.gohighlevel.com' }),
     };
 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Letter of Authorization | GoHighLevel AutoPort</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; min-height: 100vh; }
+    .nav { background: #1a1a2e; padding: 14px 32px; display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #fff; }
+    .nav-tag { font-size: 11px; background: #2563eb; color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .container { max-width: 680px; margin: 40px auto; padding: 0 20px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
+    .card-header { background: linear-gradient(135deg, #1e3a5f, #2563eb); padding: 36px; text-align: center; color: #fff; }
+    .card-header h1 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .card-header p { font-size: 14px; opacity: 0.8; }
+    .card-body { padding: 36px; }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .info-box h3 { font-size: 15px; color: #1d4ed8; margin-bottom: 10px; }
+    .info-box p { font-size: 14px; color: #1e40af; line-height: 1.7; }
+    .loa-doc { background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px; padding: 32px; text-align: center; margin: 24px 0; }
+    .loa-doc .icon { font-size: 48px; margin-bottom: 12px; }
+    .loa-doc h3 { font-size: 16px; color: #374151; margin-bottom: 8px; }
+    .loa-doc p { font-size: 13px; color: #6b7280; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; }
+    .form-group input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .signature-pad { width: 100%; height: 120px; border: 2px solid #d1d5db; border-radius: 10px; background: #fafafa; cursor: crosshair; }
+    .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin: 20px 0; }
+    .checkbox-row input { margin-top: 4px; }
+    .checkbox-row label { font-size: 13px; color: #374151; line-height: 1.6; }
+    .btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+    .success-msg { display: none; text-align: center; padding: 40px; }
+    .success-msg .icon { font-size: 64px; margin-bottom: 16px; }
+    .success-msg h2 { font-size: 22px; color: #065f46; margin-bottom: 8px; }
+    .success-msg p { font-size: 14px; color: #6b7280; }
+    .sig-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+    .sig-actions button { background: none; border: 1px solid #d1d5db; border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-logo">GoHighLevel</div>
+    <span class="nav-tag">AutoPort</span>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div style="font-size:44px;margin-bottom:12px;">✍️</div>
+        <h1>Sign Your Letter of Authorization</h1>
+        <p>Authorize GoHighLevel to port your phone number(s)</p>
+      </div>
+
+      <div class="card-body" id="formView">
+        <div class="info-box">
+          <h3>What is a Letter of Authorization?</h3>
+          <p>An LOA gives GoHighLevel permission to transfer your phone number from your current carrier. This is required by the FCC for all number ports. Your current service will remain active until the port is complete.</p>
+        </div>
+
+        <div class="loa-doc">
+          <div class="icon">📄</div>
+          <h3>Letter of Authorization</h3>
+          <p>By signing below, you authorize GoHighLevel / LeadConnector to initiate a port request for the phone number(s) listed in your submission to be transferred from your current service provider.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Full Legal Name (as it appears on your carrier account)</label>
+          <input type="text" id="sigName" placeholder="John Smith" />
+        </div>
+
+        <div class="form-group">
+          <label>Title / Role</label>
+          <input type="text" id="sigTitle" placeholder="Owner, Account Manager, etc." />
+        </div>
+
+        <div class="form-group">
+          <label>Signature (draw below)</label>
+          <canvas class="signature-pad" id="sigCanvas"></canvas>
+          <div class="sig-actions">
+            <button onclick="clearSig()">Clear</button>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="agreeCheck" />
+          <label for="agreeCheck">I confirm that I am authorized to request this port and that all information provided is accurate. I understand that my current service will remain active until the port is complete.</label>
+        </div>
+
+        <button class="btn btn-primary" id="signBtn" disabled onclick="submitSignature()">
+          ✍️ Sign & Submit LOA
+        </button>
+      </div>
+
+      <div class="success-msg" id="successView">
+        <div class="icon">✅</div>
+        <h2>LOA Signed Successfully!</h2>
+        <p>Your Letter of Authorization has been submitted. We'll now send your port request to your current carrier. You'll receive an email confirmation shortly.</p>
+        <div style="margin-top:24px;padding:16px;background:#f0fdf4;border-radius:10px;border:1px solid #86efac;">
+          <p style="font-size:13px;color:#065f46;"><strong>Next step:</strong> Keep your number active with your current carrier until you receive a port completion email from us.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    const agreeCheck = document.getElementById('agreeCheck');
+    const signBtn = document.getElementById('signBtn');
+    const sigName = document.getElementById('sigName');
+    let drawing = false, hasSig = false;
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    ctx.strokeStyle = '#1a1a2e';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return { x: t.clientX - r.left, y: t.clientY - r.top };
+    }
+
+    canvas.addEventListener('mousedown', e => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+    canvas.addEventListener('mousemove', e => { if (!drawing) return; hasSig = true; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); checkReady(); });
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseleave', () => drawing = false);
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+    canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; hasSig = true; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); checkReady(); });
+    canvas.addEventListener('touchend', () => drawing = false);
+
+    agreeCheck.addEventListener('change', checkReady);
+    sigName.addEventListener('input', checkReady);
+
+    function checkReady() { signBtn.disabled = !(hasSig && agreeCheck.checked && sigName.value.trim()); }
+    function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; checkReady(); }
+
+    function submitSignature() {
+      signBtn.disabled = true;
+      signBtn.textContent = 'Submitting...';
+      setTimeout(() => {
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('successView').style.display = 'block';
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
