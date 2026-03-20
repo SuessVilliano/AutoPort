@@ -391,6 +391,112 @@
       .main { margin: 16px auto; }
     }
 
+    /* ─── CSV UPLOAD ZONE ────────────────────────────────── */
+    .csv-upload-zone {
+      border: 2px dashed #f59e0b;
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fffbeb;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .csv-upload-zone:hover, .csv-upload-zone.drag-over {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .csv-upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+    }
+    .csv-icon { font-size: 28px; margin-bottom: 8px; }
+    .csv-text { font-size: 14px; color: #92400e; font-weight: 600; }
+    .csv-sub { font-size: 12px; color: #b45309; margin-top: 4px; }
+
+    .csv-preview {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .csv-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #f3f4f6;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .csv-preview-header h4 { font-size: 13px; font-weight: 700; color: #374151; }
+    .csv-preview-count {
+      font-size: 12px;
+      font-weight: 600;
+      background: #2563eb;
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .csv-preview-body {
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .csv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .csv-row:last-child { border-bottom: none; }
+    .csv-row-num { font-weight: 600; color: #1e3a5f; font-family: monospace; }
+    .csv-row-meta { color: #6b7280; font-size: 12px; }
+    .csv-row-remove {
+      background: none; border: none; color: #dc2626;
+      cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px;
+    }
+    .csv-row-remove:hover { background: #fee2e2; }
+
+    .divider-or {
+      display: flex; align-items: center; gap: 12px;
+      margin: 16px 0; font-size: 12px; font-weight: 700;
+      color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .divider-or::before, .divider-or::after {
+      content: ''; flex: 1; height: 1px; background: #e5e7eb;
+    }
+
+    .btn-csv-template {
+      background: none; border: 1px solid #f59e0b; color: #92400e;
+      border-radius: 6px; padding: 6px 14px; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit;
+    }
+    .btn-csv-template:hover { background: #fef3c7; }
+
+    /* ─── BATCH LOA SECTION ──────────────────────────────── */
+    .batch-loa-section {
+      background: #f0fdf4; border: 1px solid #86efac;
+      border-radius: 10px; padding: 20px; margin-top: 20px;
+    }
+    .batch-loa-section h4 { font-size: 14px; font-weight: 700; color: #166534; margin-bottom: 10px; }
+    .batch-loa-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: white; border: 1px solid #d1fae5;
+      border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all .2s;
+    }
+    .batch-loa-option:hover { border-color: #059669; background: #ecfdf5; }
+    .batch-loa-option.selected { border-color: #059669; background: #ecfdf5; }
+    .batch-loa-option input[type="radio"] { accent-color: #059669; }
+    .batch-loa-label { font-size: 13px; font-weight: 600; color: #166534; }
+    .batch-loa-desc { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
     /* ─── CHECKBOX ────────────────────────────────────────── */
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
     .checkbox-item {
@@ -457,6 +563,32 @@
             <strong>Before you begin:</strong> This tool supports US local and wireless (non-toll-free) numbers. Toll-free or international numbers require a separate process — our support team will help. Keep your numbers active with your current carrier until the port completes.
           </div>
         </div>
+
+        <!-- CSV BULK UPLOAD -->
+        <div class="csv-upload-zone" id="csv-upload-zone">
+          <input type="file" id="csv-file-input" accept=".csv,.txt,.xlsx" onchange="handleCSVUpload(this)" />
+          <div class="csv-icon">📊</div>
+          <div class="csv-text">Drop a CSV file here or click to upload bulk numbers</div>
+          <div class="csv-sub">CSV, TXT, or XLSX · One number per row · Optional columns: name, type, account#, pin</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <button class="btn-csv-template" onclick="downloadCSVTemplate()">📥 Download CSV Template</button>
+          <span id="csv-status" style="font-size:12px;color:#6b7280"></span>
+        </div>
+
+        <!-- CSV Preview -->
+        <div class="csv-preview" id="csv-preview" style="display:none">
+          <div class="csv-preview-header">
+            <h4>📋 Imported Numbers</h4>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="csv-preview-count" id="csv-count">0</span>
+              <button class="btn-csv-template" onclick="clearCSVImport()" style="border-color:#dc2626;color:#dc2626">Clear All</button>
+            </div>
+          </div>
+          <div class="csv-preview-body" id="csv-preview-body"></div>
+        </div>
+
+        <div class="divider-or">or enter numbers manually</div>
 
         <div id="eligibility-numbers">
           <div class="number-row" id="elig-row-0">
@@ -667,12 +799,41 @@
           <div class="field-error" id="err-bill" style="display:none"></div>
         </div>
 
-        <!-- LOA info -->
-        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:18px;margin-bottom:24px">
-          <div style="font-weight:700;color:#166534;margin-bottom:8px;font-size:14px">📝 Letter of Authorization (LOA)</div>
-          <p style="font-size:13px;color:#15803d;line-height:1.6">
-            Twilio will automatically generate your LOA once your request is submitted. You'll receive it by email and will need to digitally sign it before your port can proceed. No file upload needed from you for the LOA.
+        <!-- LOA info & Batch LOA Options -->
+        <div class="batch-loa-section">
+          <h4>📝 Letter of Authorization (LOA)</h4>
+          <p style="font-size:13px;color:#15803d;line-height:1.6;margin-bottom:14px">
+            Choose how LOAs should be generated for your port request:
           </p>
+
+          <label class="batch-loa-option selected" onclick="selectLOAMode('single')">
+            <input type="radio" name="loaMode" value="single" checked />
+            <div>
+              <div class="batch-loa-label">Single LOA (All numbers on one document)</div>
+              <div class="batch-loa-desc">Best for numbers under the same account holder and carrier. One signature covers all.</div>
+            </div>
+          </label>
+
+          <label class="batch-loa-option" onclick="selectLOAMode('per-carrier')">
+            <input type="radio" name="loaMode" value="per-carrier" />
+            <div>
+              <div class="batch-loa-label">Separate LOA per Carrier</div>
+              <div class="batch-loa-desc">Numbers from different carriers each get their own LOA. Recommended for mixed-carrier batches.</div>
+            </div>
+          </label>
+
+          <label class="batch-loa-option" onclick="selectLOAMode('per-number')">
+            <input type="radio" name="loaMode" value="per-number" />
+            <div>
+              <div class="batch-loa-label">Individual LOA per Number</div>
+              <div class="batch-loa-desc">Each number gets its own LOA document. Use when numbers have different account holders.</div>
+            </div>
+          </label>
+
+          <div style="margin-top:12px;font-size:12px;color:#6b7280;line-height:1.6">
+            Twilio generates LOAs automatically after submission. You'll receive them by email to sign digitally.
+            <span id="loa-count-hint" style="font-weight:600;color:#059669"></span>
+          </div>
         </div>
 
         <!-- Terms checkboxes -->
@@ -756,7 +917,7 @@
             </div>
             <div class="review-item">
               <label>Letter of Authorization</label>
-              <p>Will be generated by Twilio after submission</p>
+              <p id="rev-loa">Will be generated by Twilio after submission</p>
             </div>
           </div>
         </div>
@@ -871,9 +1032,191 @@ let currentStep = 1;
 let eligibleNumbers = [];
 let uploadedFiles = { bill: null, loa: null };
 let portRequestData = {};
+let csvImportedNumbers = [];
+let loaMode = 'single';
 
 // Relative API base — works on Vercel (same domain) and local dev
 const API_BASE = '/api/porting';
+
+// ═══════════════════════════════════════════════════
+//  CSV BULK UPLOAD
+// ═══════════════════════════════════════════════════
+function handleCSVUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['csv', 'txt', 'xlsx'].includes(ext)) {
+    alert('Please upload a CSV, TXT, or XLSX file.');
+    input.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    parseCSVContent(text, file.name);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSVContent(text, filename) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length === 0) return;
+
+  // Detect if first line is header
+  const firstLine = lines[0].toLowerCase();
+  const hasHeader = firstLine.includes('phone') || firstLine.includes('number') ||
+                    firstLine.includes('name') || firstLine.includes('type');
+  const startIdx = hasHeader ? 1 : 0;
+
+  csvImportedNumbers = [];
+  const errors = [];
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const cols = lines[i].split(/[,\t;|]/).map(c => c.trim().replace(/^["']|["']$/g, ''));
+    if (!cols[0]) continue;
+
+    // First column is always the phone number
+    let rawNum = cols[0].replace(/\D/g, '');
+    if (rawNum.length === 10) rawNum = '1' + rawNum;
+    if (rawNum.length === 11 && rawNum[0] === '1') {
+      const e164 = '+' + rawNum;
+      // Detect columns by header or position
+      const name = cols[1] || '';
+      const type = (cols[2] || '').toUpperCase();
+      const acct = cols[3] || '';
+      const pin = cols[4] || '';
+
+      csvImportedNumbers.push({
+        number: e164,
+        name: name,
+        type: type === 'MOBILE' || type === 'WIRELESS' ? 'MOBILE' : 'LOCAL',
+        account: acct,
+        pin: pin
+      });
+    } else {
+      errors.push(`Row ${i + 1}: "${cols[0]}" is not a valid US number`);
+    }
+  }
+
+  // Deduplicate
+  const seen = new Set();
+  csvImportedNumbers = csvImportedNumbers.filter(n => {
+    if (seen.has(n.number)) return false;
+    seen.add(n.number);
+    return true;
+  });
+
+  // Show preview
+  renderCSVPreview();
+
+  const statusEl = document.getElementById('csv-status');
+  let statusMsg = `Loaded ${csvImportedNumbers.length} numbers from ${filename}`;
+  if (errors.length > 0) statusMsg += ` (${errors.length} skipped)`;
+  statusEl.textContent = statusMsg;
+  statusEl.style.color = errors.length > 0 ? '#b45309' : '#059669';
+
+  if (errors.length > 0 && errors.length <= 5) {
+    console.warn('CSV import errors:', errors);
+  }
+
+  updateLOAHint();
+}
+
+function renderCSVPreview() {
+  const preview = document.getElementById('csv-preview');
+  const body = document.getElementById('csv-preview-body');
+  const count = document.getElementById('csv-count');
+
+  if (csvImportedNumbers.length === 0) {
+    preview.style.display = 'none';
+    return;
+  }
+
+  preview.style.display = 'block';
+  count.textContent = csvImportedNumbers.length;
+
+  body.innerHTML = csvImportedNumbers.map((n, i) => `
+    <div class="csv-row" id="csv-row-${i}">
+      <div>
+        <span class="csv-row-num">${n.number}</span>
+        ${n.name ? `<span class="csv-row-meta"> — ${n.name}</span>` : ''}
+        <span class="csv-row-meta">(${n.type})</span>
+        ${n.account ? `<span class="csv-row-meta"> · Acct: ${n.account}</span>` : ''}
+      </div>
+      <button class="csv-row-remove" onclick="removeCSVNumber(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeCSVNumber(idx) {
+  csvImportedNumbers.splice(idx, 1);
+  renderCSVPreview();
+  document.getElementById('csv-count').textContent = csvImportedNumbers.length;
+  document.getElementById('csv-status').textContent = `${csvImportedNumbers.length} numbers remaining`;
+  updateLOAHint();
+}
+
+function clearCSVImport() {
+  csvImportedNumbers = [];
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('csv-file-input').value = '';
+  document.getElementById('csv-status').textContent = '';
+  updateLOAHint();
+}
+
+function downloadCSVTemplate() {
+  const template = 'phone_number,contact_name,type,account_number,pin\n+13125889960,Derek Jones,LOCAL,,\n+13125550001,Jane Smith,MOBILE,ACC123,1234\n+18475551234,Bob Lee,LOCAL,,\n';
+  const blob = new Blob([template], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'autoport-bulk-template.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// CSV drag and drop
+(function() {
+  const zone = document.getElementById('csv-upload-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) {
+      const fakeInput = { files: e.dataTransfer.files };
+      handleCSVUpload(fakeInput);
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+//  LOA MODE
+// ═══════════════════════════════════════════════════
+function selectLOAMode(mode) {
+  loaMode = mode;
+  document.querySelectorAll('.batch-loa-option').forEach(opt => {
+    opt.classList.toggle('selected', opt.querySelector('input').value === mode);
+  });
+  updateLOAHint();
+}
+
+function updateLOAHint() {
+  const totalNums = eligibleNumbers.length + csvImportedNumbers.length;
+  const hint = document.getElementById('loa-count-hint');
+  if (!hint) return;
+  if (totalNums === 0) { hint.textContent = ''; return; }
+
+  if (loaMode === 'single') {
+    hint.textContent = ` — 1 LOA will be generated for all ${totalNums} number(s).`;
+  } else if (loaMode === 'per-number') {
+    hint.textContent = ` — ${totalNums} individual LOA(s) will be generated.`;
+  } else {
+    hint.textContent = ` — Separate LOAs will be grouped by carrier for ${totalNums} number(s).`;
+  }
+}
 
 // ═══════════════════════════════════════════════════
 //  NAVIGATION
@@ -929,9 +1272,14 @@ function checkEligibility() {
   const numbers = [];
   let valid = true;
 
+  // Collect manually entered numbers
   inputs.forEach((inp, i) => {
     const e164 = inp.dataset.e164;
     if (!e164 || e164.length < 12) {
+      // Allow empty if CSV numbers exist
+      if (csvImportedNumbers.length > 0 && !inp.value.trim()) {
+        return; // skip empty manual fields when CSV is loaded
+      }
       inp.classList.add('error');
       inp.nextElementSibling.style.display = 'block';
       inp.nextElementSibling.textContent = 'Enter a valid US phone number';
@@ -943,7 +1291,23 @@ function checkEligibility() {
     }
   });
 
-  if (!valid) return;
+  // Add CSV imported numbers
+  const csvNums = csvImportedNumbers.map(n => n.number);
+
+  // Must have at least some numbers
+  if (numbers.length === 0 && csvNums.length === 0) {
+    if (inputs.length > 0) {
+      inputs[0].classList.add('error');
+      inputs[0].nextElementSibling.style.display = 'block';
+      inputs[0].nextElementSibling.textContent = 'Enter at least one phone number or upload a CSV';
+    }
+    return;
+  }
+
+  // Combine, deduplicate
+  const allNumbers = [...new Set([...numbers, ...csvNums])];
+
+  if (!valid && csvNums.length === 0) return;
 
   // Update badges to "checking"
   document.querySelectorAll('[id^="elig-badge-"]').forEach((b,i) => {
@@ -961,21 +1325,38 @@ function checkEligibility() {
   setTimeout(() => {
     eligibleNumbers = [];
     const badges = document.querySelectorAll('[id^="elig-badge-"]');
+
+    // Check manual numbers
     numbers.forEach((num, i) => {
-      // Simulated result — in production, call your backend
       const isPortable = !num.startsWith('+1800') && !num.startsWith('+1888');
       const numberType = 'LOCAL';
-      badges[i].className = `elig-badge ${isPortable ? 'elig-portable' : 'elig-notportable'}`;
-      badges[i].textContent = isPortable ? '✓ Portable' : '✗ Not Portable';
+      if (badges[i]) {
+        badges[i].className = `elig-badge ${isPortable ? 'elig-portable' : 'elig-notportable'}`;
+        badges[i].textContent = isPortable ? '✓ Portable' : '✗ Not Portable';
+      }
       if (isPortable) eligibleNumbers.push({ number: num, type: numberType });
+    });
+
+    // Add CSV numbers (mark as portable unless toll-free)
+    csvImportedNumbers.forEach(csvNum => {
+      const isPortable = !csvNum.number.startsWith('+1800') && !csvNum.number.startsWith('+1888');
+      if (isPortable && !eligibleNumbers.find(e => e.number === csvNum.number)) {
+        eligibleNumbers.push({
+          number: csvNum.number,
+          type: csvNum.type || 'LOCAL',
+          name: csvNum.name || '',
+          account: csvNum.account || '',
+          pin: csvNum.pin || ''
+        });
+      }
     });
 
     btn.innerHTML = 'Check Eligibility →';
     btn.disabled = false;
 
     // Check for toll-free / international numbers
-    const tollFree = numbers.filter(n => /^\+1(800|833|844|855|866|877|888)/.test(n));
-    const intl     = numbers.filter(n => !n.startsWith('+1'));
+    const tollFree = allNumbers.filter(n => /^\+1(800|833|844|855|866|877|888)/.test(n));
+    const intl     = allNumbers.filter(n => !n.startsWith('+1'));
     const manualLane = [...tollFree, ...intl];
 
     if (manualLane.length > 0) {
@@ -995,6 +1376,7 @@ function checkEligibility() {
 
     if (eligibleNumbers.length > 0) {
       populateStep2Numbers();
+      updateLOAHint();
       // Short delay then advance
       setTimeout(() => {
         document.getElementById('step-nav-1').classList.remove('active');
@@ -1047,16 +1429,17 @@ function populateStep2Numbers() {
     div.innerHTML = `
       <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:10px">
         📞 ${n.number} <span style="font-size:11px;color:#6b7280;font-weight:400">(${n.type || 'LOCAL'})</span>
+        ${n.name ? `<span style="font-size:11px;color:#6b7280;font-weight:400"> — ${n.name}</span>` : ''}
       </div>
       <div class="number-row-fields">
         ${isWireless ? `
         <div class="form-group">
           <label>Wireless Account #</label>
-          <input type="text" class="num-acct" placeholder="Account number" />
+          <input type="text" class="num-acct" placeholder="Account number" value="${n.account || ''}" />
         </div>
         <div class="form-group">
           <label>PIN / Last 4 SSN</label>
-          <input type="text" class="num-pin" placeholder="XXXX" maxlength="10" />
+          <input type="text" class="num-pin" placeholder="XXXX" maxlength="10" value="${n.pin || ''}" />
         </div>
         ` : '<div></div><div></div>'}
       </div>
@@ -1065,6 +1448,14 @@ function populateStep2Numbers() {
     div.dataset.type = n.type;
     wrap.appendChild(div);
   });
+
+  // Show count summary if bulk
+  if (eligibleNumbers.length > 5) {
+    const summary = document.createElement('div');
+    summary.style.cssText = 'text-align:center;padding:12px;color:#2563eb;font-size:13px;font-weight:600;background:#eff6ff;border-radius:8px;margin-top:8px';
+    summary.textContent = `${eligibleNumbers.length} numbers loaded for porting`;
+    wrap.prepend(summary);
+  }
 }
 
 function addPortNumber() {
@@ -1265,7 +1656,15 @@ function buildReview() {
     `;
   });
 
-  // Store for submission — includes CC/BCC and businessName
+  // LOA mode display
+  const loaLabels = {
+    'single': '1 LOA for all numbers',
+    'per-carrier': 'Separate LOA per carrier',
+    'per-number': `Individual LOA per number (${eligibleNumbers.length} LOAs)`
+  };
+  document.getElementById('rev-loa').textContent = loaLabels[loaMode] || 'Auto-generated by Twilio';
+
+  // Store for submission — includes CC/BCC, businessName, and LOA mode
   portRequestData = {
     customerType: type,
     customerName: `${first} ${last}`,
@@ -1276,6 +1675,7 @@ function buildReview() {
     bccEmails: bcc ? [bcc] : [],
     address: { street, city, state, zip, country: 'US' },
     phoneNumbers: eligibleNumbers.map(n => ({ number: n.number, type: n.type })),
+    loaMode: loaMode,
     billingFile: uploadedFiles.bill,
     isBeta: window.IS_BETA_MODE || false,
   };
