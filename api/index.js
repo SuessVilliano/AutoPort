@@ -430,38 +430,56 @@ IMPORTANT: You are customer-facing, not an internal tool. Never reference intern
     const openaiKey = process.env.OPENAI_API_KEY;
 
     let reply;
+
+    // Try AI providers, fall back to static responses on any failure
     if (geminiKey) {
-      const historyParts = (history || []).map(h => ({
-        role: h.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: h.content }]
-      }));
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          contents: [...historyParts, { role: 'user', parts: [{ text: message }] }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 2000 }
-        })
-      });
-      const data = await resp.json();
-      reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not process that request.';
-    } else if (openaiKey) {
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        ...(history || []).map(h => ({ role: h.role, content: h.content })),
-        { role: 'user', content: message }
-      ];
-      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
-        body: JSON.stringify({ model: 'gpt-4o-mini', messages, temperature: 0.3, max_tokens: 2000 })
-      });
-      const data = await resp.json();
-      reply = data.choices?.[0]?.message?.content || 'Sorry, I could not process that request.';
-    } else {
-      // No AI configured — return helpful static responses
+      try {
+        const historyParts = (history || []).map(h => ({
+          role: h.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: h.content }]
+        }));
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [...historyParts, { role: 'user', parts: [{ text: message }] }],
+            generationConfig: { temperature: 0.3, maxOutputTokens: 2000 }
+          })
+        });
+        const data = await resp.json();
+        const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        reply = aiReply || null; // null triggers fallback
+        if (!aiReply) console.warn('Gemini returned no content:', JSON.stringify(data.error || data).substring(0, 200));
+      } catch (e) {
+        console.warn('Gemini error, falling back:', e.message);
+        reply = null;
+      }
+    }
+
+    if (!reply && openaiKey) {
+      try {
+        const messages = [
+          { role: 'system', content: systemPrompt },
+          ...(history || []).map(h => ({ role: h.role, content: h.content })),
+          { role: 'user', content: message }
+        ];
+        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
+          body: JSON.stringify({ model: 'gpt-4o-mini', messages, temperature: 0.3, max_tokens: 2000 })
+        });
+        const data = await resp.json();
+        reply = data.choices?.[0]?.message?.content || null;
+      } catch (e) {
+        console.warn('OpenAI error, falling back:', e.message);
+        reply = null;
+      }
+    }
+
+    // Always fall back to static responses if AI fails or isn't configured
+    if (!reply) {
       reply = getStaticResponse(message);
     }
 
