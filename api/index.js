@@ -440,28 +440,34 @@ IMPORTANT: You are customer-facing, not an internal tool. Never reference intern
       // Groq (primary — free, fast, Llama 3.3 70B)
       if (groqKey) {
         try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 8000);
-          const messages = [
+          const groqMessages = [
             { role: 'system', content: systemPrompt },
             ...(history || []).map(h => ({ role: h.role, content: h.content })),
             { role: 'user', content: message }
           ];
-          const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          const groqResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${groqKey}` },
-            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.3, max_tokens: 1500 }),
-            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${groqKey}`,
+            },
+            body: JSON.stringify({
+              model: 'llama-3.3-70b-versatile',
+              messages: groqMessages,
+              temperature: 0.3,
+              max_tokens: 1500,
+            }),
           });
-          clearTimeout(timeout);
-          const text = await resp.text();
-          let data;
-          try { data = JSON.parse(text); } catch { data = {}; }
-          reply = data.choices?.[0]?.message?.content || null;
-          if (reply) source = 'groq';
-          else console.warn('Groq response:', resp.status, text.substring(0, 300));
+          if (groqResp.ok) {
+            const groqData = await groqResp.json();
+            reply = groqData.choices?.[0]?.message?.content || null;
+            if (reply) source = 'groq';
+          } else {
+            const errText = await groqResp.text();
+            console.error('Groq HTTP', groqResp.status, errText.substring(0, 200));
+          }
         } catch (e) {
-          console.warn('Groq error:', e.name, e.message);
+          console.error('Groq exception:', e.message);
         }
       }
 
