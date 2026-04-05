@@ -437,9 +437,11 @@ IMPORTANT: You are customer-facing, not an internal tool. Never reference intern
       const geminiKey = process.env.GEMINI_API_KEY;
       const openaiKey = process.env.OPENAI_API_KEY;
 
-      // Groq (primary — free, fast)
+      // Groq (primary — free, fast, Llama 3.3 70B)
       if (groqKey) {
         try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 8000);
           const messages = [
             { role: 'system', content: systemPrompt },
             ...(history || []).map(h => ({ role: h.role, content: h.content })),
@@ -448,14 +450,18 @@ IMPORTANT: You are customer-facing, not an internal tool. Never reference intern
           const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${groqKey}` },
-            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.3, max_tokens: 1500 })
+            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, temperature: 0.3, max_tokens: 1500 }),
+            signal: controller.signal,
           });
-          const data = await resp.json();
+          clearTimeout(timeout);
+          const text = await resp.text();
+          let data;
+          try { data = JSON.parse(text); } catch { data = {}; }
           reply = data.choices?.[0]?.message?.content || null;
           if (reply) source = 'groq';
-          else console.warn('Groq returned no content:', JSON.stringify(data.error || {}).substring(0, 200));
+          else console.warn('Groq response:', resp.status, text.substring(0, 300));
         } catch (e) {
-          console.warn('Groq error:', e.message);
+          console.warn('Groq error:', e.name, e.message);
         }
       }
 
