@@ -136,7 +136,6 @@ describe('Static Files', () => {
     expect(res.text).not.toContain('Internal Agent Tool');
     expect(res.text).not.toContain('migration@leadconnectorhq.com');
     expect(res.text).not.toContain('Smart Paste');
-    expect(res.text).not.toContain('AI Assistant');
     expect(res.text).not.toContain('BETA');
   });
 
@@ -149,15 +148,49 @@ describe('Static Files', () => {
   });
 });
 
-describe('Removed Endpoints', () => {
-  test('POST /api/porting/chat does not exist', async () => {
+describe('AI Chat Assistant', () => {
+  test('POST /api/porting/chat returns helpful response', async () => {
     const res = await request(app)
       .post('/api/porting/chat')
-      .send({ message: 'hello' });
-    // Should fall through to catch-all (serve HTML) since route doesn't exist
-    expect(res.headers['content-type']).toMatch(/html/);
+      .send({ message: 'How long does porting take?' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.reply).toMatch(/5-15 business days/i);
   });
 
+  test('POST /api/porting/chat handles rejection questions', async () => {
+    const res = await request(app)
+      .post('/api/porting/chat')
+      .send({ message: 'My port was rejected' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.reply).toMatch(/mismatch|carrier|fix/i);
+  });
+
+  test('POST /api/porting/chat handles credential questions', async () => {
+    const res = await request(app)
+      .post('/api/porting/chat')
+      .send({ message: 'Where do I find my Account SID?' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.reply).toMatch(/Account SID/i);
+  });
+
+  test('POST /api/porting/chat returns generic help for unknown queries', async () => {
+    const res = await request(app)
+      .post('/api/porting/chat')
+      .send({ message: 'hi' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.reply).toMatch(/porting assistant/i);
+  });
+
+  test('POST /api/porting/chat rejects empty message', async () => {
+    const res = await request(app)
+      .post('/api/porting/chat')
+      .send({});
+    expect(res.statusCode).toBe(400);
+  });
+});
+
+describe('Removed Endpoints', () => {
   test('POST /api/porting/extract does not exist', async () => {
     const res = await request(app)
       .post('/api/porting/extract')
@@ -168,7 +201,6 @@ describe('Removed Endpoints', () => {
   test('GET /beta serves index.html (no beta page)', async () => {
     const res = await request(app).get('/beta');
     expect(res.statusCode).toBe(200);
-    // Should serve main index since beta.html was deleted
     expect(res.text).toContain('AutoPort');
     expect(res.text).not.toContain('Agent Testing Sandbox');
   });

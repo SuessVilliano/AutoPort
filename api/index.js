@@ -8,6 +8,7 @@ const express  = require('express');
 const cors     = require('cors');
 const multer   = require('multer');
 const path     = require('path');
+const fetch    = require('node-fetch');
 
 const twilio     = require('../lib/twilioService');
 const validation = require('../lib/validation');
@@ -371,6 +372,136 @@ app.post('/api/porting/configure-number', requireTwilioCreds, async (req, res) =
 app.get('/api/porting/requests', (_req, res) => {
   res.json({ requests: store.getAllRequests() });
 });
+
+// ═══════════════════════════════════════════════════════════
+//  POST /api/porting/chat
+//  Customer-facing AI porting assistant.
+//  Helps users with porting questions, rejections, timelines.
+// ═══════════════════════════════════════════════════════════
+app.post('/api/porting/chat', async (req, res) => {
+  try {
+    let { message, history } = req.body;
+    if (typeof history === 'string') {
+      try { history = JSON.parse(history); } catch { history = []; }
+    }
+    if (!message) {
+      return res.status(400).json({ error: 'Message required' });
+    }
+
+    const systemPrompt = `You are AutoPort Assistant — a friendly, expert phone number porting advisor built into the AutoPort marketplace app. You help GoHighLevel agency owners and sub-account users port their phone numbers.
+
+YOUR EXPERTISE:
+- Phone number porting process (how it works, timelines, requirements)
+- LOA (Letter of Authorization) — what it is, why it's needed, how to sign
+- Common port rejection reasons and exactly how to fix each one
+- Twilio porting API specifics (you work on top of Twilio's infrastructure)
+- LC Phone / GHL native phone system (users may not know it's Twilio underneath)
+- Carrier-specific quirks (AT&T, Verizon, T-Mobile, etc.)
+- A2P 10DLC registration requirements after porting
+- Toll-free vs local vs mobile number differences
+- Bulk porting (CSV uploads, batch LOAs)
+- Post-port configuration (webhooks, GHL workflows)
+
+KEY FACTS TO ALWAYS REMEMBER:
+- Standard ports take 5-15 business days
+- Toll-free ports take 2-4 weeks and require manual handling
+- International ports require Twilio's separate international form
+- Users MUST keep their numbers active with current carrier until port completes
+- SMS may be unavailable for up to 3 business days after porting
+- The #1 rejection reason is name/address mismatch with carrier records
+- Users need Account SID + Auth Token from their phone system dashboard
+- For GHL/LC Phone users: Settings → Phone Integration → Account SID & Auth Token
+- For direct Twilio users: console.twilio.com dashboard
+- After porting, users should register for A2P 10DLC to send business SMS
+- LOAs must match carrier records EXACTLY — including middle initials, Inc/LLC, etc.
+
+COMMON REJECTION FIXES:
+- NAME_MISMATCH: Call carrier, ask for exact name on account. Business? Include LLC/Inc.
+- ADDRESS_MISMATCH: Call carrier for exact service address on file. PO Box vs street matters.
+- ACCOUNT_NUMBER: Found on monthly bill or by calling carrier.
+- PIN_INCORRECT: Call carrier to confirm or reset PIN. Some carriers use last 4 SSN.
+- NUMBER_ACTIVE: Ensure number hasn't been disconnected. Reactivate with carrier first.
+
+TONE: Friendly, clear, action-oriented. Give specific steps, not vague advice. If you don't know something, say so — don't guess. Keep answers concise but thorough enough to actually solve the problem.
+
+IMPORTANT: You are customer-facing, not an internal tool. Never reference internal systems, migration teams, or support emails. You ARE the support.`;
+
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const openaiKey = process.env.OPENAI_API_KEY;
+
+    let reply;
+    if (geminiKey) {
+      const historyParts = (history || []).map(h => ({
+        role: h.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: h.content }]
+      }));
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [...historyParts, { role: 'user', parts: [{ text: message }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 2000 }
+        })
+      });
+      const data = await resp.json();
+      reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not process that request.';
+    } else if (openaiKey) {
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        ...(history || []).map(h => ({ role: h.role, content: h.content })),
+        { role: 'user', content: message }
+      ];
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
+        body: JSON.stringify({ model: 'gpt-4o-mini', messages, temperature: 0.3, max_tokens: 2000 })
+      });
+      const data = await resp.json();
+      reply = data.choices?.[0]?.message?.content || 'Sorry, I could not process that request.';
+    } else {
+      // No AI configured — return helpful static responses
+      reply = getStaticResponse(message);
+    }
+
+    res.json({ success: true, reply });
+  } catch (err) {
+    console.error('Chat error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Static fallback responses when no AI API key is configured
+function getStaticResponse(message) {
+  const q = message.toLowerCase();
+
+  if (q.includes('how long') || q.includes('timeline') || q.includes('how many days'))
+    return 'Standard phone number ports typically take **5-15 business days**. Toll-free numbers take 2-4 weeks. The biggest factor is how quickly you sign the LOA and whether your information matches your carrier records exactly.';
+
+  if (q.includes('reject') || q.includes('denied') || q.includes('failed'))
+    return 'The most common rejection reasons are:\n\n1. **Name mismatch** — Call your carrier and ask for the exact name on your account (include LLC, Inc, etc.)\n2. **Address mismatch** — Get the exact service address from your carrier\n3. **Wrong account number** — Check your monthly bill or call your carrier\n4. **Wrong PIN** — Call your carrier to confirm or reset your PIN\n\nAfter correcting the info, you can resubmit from the rejection email.';
+
+  if (q.includes('loa') || q.includes('letter of auth'))
+    return 'A **Letter of Authorization (LOA)** is a legal document that authorizes the transfer of your phone number. After you submit a port request, you\'ll receive an email from Twilio with a link to sign your LOA digitally. **You have 30 days to sign it** — after that, the request expires. The LOA must match your carrier records exactly.';
+
+  if (q.includes('account sid') || q.includes('auth token') || q.includes('credentials') || q.includes('where do i find'))
+    return 'To find your Account SID and Auth Token:\n\n**GoHighLevel / LC Phone users:**\nSettings → Phone Integration → You\'ll see Account SID and Auth Token\n\n**Direct Twilio users:**\nLog in to console.twilio.com — both are on the main dashboard\n\nThe Account SID starts with "AC" and is 34 characters long.';
+
+  if (q.includes('toll') || q.includes('800') || q.includes('888'))
+    return 'Toll-free numbers (800, 833, 844, 855, 866, 877, 888) require a **separate manual porting process** through Twilio\'s international porting form. They typically take 2-4 weeks. AutoPort will detect toll-free numbers during the eligibility check and guide you to the correct form.';
+
+  if (q.includes('cancel') || q.includes('keep active'))
+    return '**Do NOT cancel your current carrier service** until you receive a "Port Complete" email. If you cancel early, the port will fail and you could lose your number. Keep paying your current carrier until the port is confirmed complete.';
+
+  if (q.includes('sms') || q.includes('text') || q.includes('a2p') || q.includes('10dlc'))
+    return 'After porting, SMS may be unavailable for **up to 3 business days** — this is normal. For business SMS, you\'ll need to register for **A2P 10DLC** (Application-to-Person messaging). This is required by carriers for all business text messaging. You can set this up in your GHL account or Twilio console.';
+
+  if (q.includes('bulk') || q.includes('csv') || q.includes('multiple'))
+    return 'For bulk porting, you can upload a **CSV file** with your numbers in Step 1. The CSV should have columns: phone_number, contact_name, type, account_number, pin. You can download a template from the eligibility step. All numbers on a single LOA must have the same account holder.';
+
+  return 'I\'m the AutoPort porting assistant! I can help with:\n\n- **Porting timelines** — how long it takes\n- **Rejection fixes** — what went wrong and how to fix it\n- **LOA questions** — what it is and how to sign\n- **Finding your credentials** — Account SID and Auth Token\n- **Toll-free porting** — special requirements\n- **Bulk imports** — CSV formatting\n- **Post-port setup** — A2P 10DLC, SMS, webhooks\n\nWhat would you like help with?';
+}
 
 // ═══════════════════════════════════════════════════════════
 //  POST /api/porting/generate-loa
