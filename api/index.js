@@ -438,6 +438,7 @@ IMPORTANT: You are customer-facing, not an internal tool. Never reference intern
       const openaiKey = process.env.OPENAI_API_KEY;
 
       // Groq (primary — free, fast, Llama 3.3 70B)
+      console.log('[CHAT] AI path. groq:', !!groqKey, 'gemini:', !!geminiKey, 'openai:', !!openaiKey);
       if (groqKey) {
         try {
           const groqMessages = [
