@@ -1,11 +1,13 @@
 {
-  "name": "autoport-ghl",
-  "version": "1.0.0",
-  "description": "GHL Phone Number Porting Automation Tool — Vercel Deployment",
+  "name": "autoport-marketplace",
+  "version": "2.0.0",
+  "description": "AutoPort — Phone Number Porting Marketplace for GoHighLevel Agencies",
   "main": "api/index.js",
   "scripts": {
     "dev": "vercel dev",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "test": "jest --verbose",
+    "test:all": "jest --verbose --forceExit"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -17,6 +19,8 @@
     "twilio": "^4.23.0"
   },
   "devDependencies": {
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2",
     "vercel": "^34.0.0"
   },
   "engines": {

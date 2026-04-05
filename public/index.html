@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Port Your Phone Number | GoHighLevel</title>
+  <title>AutoPort — Phone Number Porting for GoHighLevel</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -29,14 +29,26 @@
       letter-spacing: -0.5px;
     }
     .nav-logo span { color: #f59e0b; }
-    .nav-badge {
-      font-size: 11px;
-      background: #f59e0b;
-      color: #1a1a2e;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 600;
+    .nav-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-left: 4px;
     }
+    .nav-right { margin-left: auto; display: flex; gap: 10px; }
+    .nav-btn {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.2); }
+    .nav-btn.active { background: #2563eb; border-color: #2563eb; }
 
     /* ─── PROGRESS BAR ────────────────────────────────────── */
     .progress-wrap {
@@ -45,16 +57,16 @@
       padding: 0 32px;
     }
     .progress-steps {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       display: flex;
       align-items: stretch;
     }
     .step-btn {
       flex: 1;
-      padding: 16px 8px 14px;
+      padding: 16px 4px 14px;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       color: #9ca3af;
       border: none;
@@ -62,7 +74,6 @@
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all .2s;
-      position: relative;
     }
     .step-btn .step-num {
       display: inline-flex;
@@ -74,12 +85,9 @@
       color: #6b7280;
       font-size: 11px;
       font-weight: 700;
-      margin-right: 6px;
+      margin-right: 4px;
     }
-    .step-btn.active {
-      color: #2563eb;
-      border-bottom-color: #2563eb;
-    }
+    .step-btn.active { color: #2563eb; border-bottom-color: #2563eb; }
     .step-btn.active .step-num { background: #2563eb; color: #fff; }
     .step-btn.done { color: #059669; }
     .step-btn.done .step-num { background: #059669; color: #fff; }
@@ -134,7 +142,7 @@
     label .hint { font-weight: 400; color: #6b7280; margin-left: 4px; }
 
     input[type="text"], input[type="email"], input[type="tel"],
-    input[type="date"], select, textarea {
+    input[type="password"], select, textarea {
       border: 1px solid #d1d5db;
       border-radius: 8px;
       padding: 10px 14px;
@@ -381,25 +389,20 @@
       animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ─── MOBILE ──────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      .form-grid.two-col, .form-grid.three-col { grid-template-columns: 1fr; }
-      .number-row-fields { grid-template-columns: 1fr; }
-      .review-grid { grid-template-columns: 1fr; }
-      .radio-group { flex-direction: column; }
-      .main { margin: 16px auto; }
+    .spinner-dark {
+      border-color: rgba(0,0,0,0.15);
+      border-top-color: #2563eb;
     }
 
     /* ─── CSV UPLOAD ZONE ────────────────────────────────── */
     .csv-upload-zone {
-      border: 2px dashed #f59e0b;
+      border: 2px dashed #d1d5db;
       border-radius: 10px;
       padding: 24px;
       text-align: center;
       cursor: pointer;
       transition: all .2s;
-      background: #fffbeb;
+      background: #f9fafb;
       margin-bottom: 16px;
       position: relative;
     }
@@ -415,8 +418,8 @@
       width: 100%;
     }
     .csv-icon { font-size: 28px; margin-bottom: 8px; }
-    .csv-text { font-size: 14px; color: #92400e; font-weight: 600; }
-    .csv-sub { font-size: 12px; color: #b45309; margin-top: 4px; }
+    .csv-text { font-size: 14px; color: #374151; font-weight: 600; }
+    .csv-sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
 
     .csv-preview {
       background: #f9fafb;
@@ -474,11 +477,11 @@
     }
 
     .btn-csv-template {
-      background: none; border: 1px solid #f59e0b; color: #92400e;
+      background: none; border: 1px solid #d1d5db; color: #374151;
       border-radius: 6px; padding: 6px 14px; font-size: 12px;
       font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit;
     }
-    .btn-csv-template:hover { background: #fef3c7; }
+    .btn-csv-template:hover { background: #f3f4f6; }
 
     /* ─── BATCH LOA SECTION ──────────────────────────────── */
     .batch-loa-section {
@@ -497,81 +500,6 @@
     .batch-loa-label { font-size: 13px; font-weight: 600; color: #166534; }
     .batch-loa-desc { font-size: 11px; color: #6b7280; margin-top: 2px; }
 
-    /* ─── CHAT TOGGLE BUTTON ─────────────────────────────── */
-    .btn-chat-toggle {
-      background: #f59e0b; color: #1a1a2e; border: none;
-      border-radius: 20px; padding: 8px 18px; font-size: 13px;
-      font-weight: 700; cursor: pointer; font-family: inherit;
-      transition: all .2s; animation: pulse-gold 2s infinite;
-    }
-    .btn-chat-toggle:hover { background: #fbbf24; transform: scale(1.05); }
-    @keyframes pulse-gold {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
-      50% { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
-    }
-
-    /* ─── CHAT PANEL ─────────────────────────────────────── */
-    .chat-panel {
-      position: fixed; right: 20px; bottom: 20px; top: 70px;
-      width: 420px; background: #fff; border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3); z-index: 1000;
-      display: flex; flex-direction: column; overflow: hidden;
-      border: 1px solid #e5e7eb;
-    }
-    .chat-header {
-      background: linear-gradient(135deg, #1e3a5f, #2563eb);
-      padding: 14px 18px; color: #fff; display: flex;
-      align-items: center; gap: 10px; flex-shrink: 0;
-    }
-    .chat-messages {
-      flex: 1; overflow-y: auto; padding: 16px;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .chat-msg { display: flex; gap: 8px; }
-    .chat-msg.user { justify-content: flex-end; }
-    .chat-bubble {
-      max-width: 85%; padding: 10px 14px; border-radius: 12px;
-      font-size: 13px; line-height: 1.5;
-    }
-    .chat-msg.assistant .chat-bubble {
-      background: #f3f4f6; color: #111; border-bottom-left-radius: 4px;
-    }
-    .chat-msg.user .chat-bubble {
-      background: #2563eb; color: #fff; border-bottom-right-radius: 4px;
-    }
-    .chat-input-wrap {
-      border-top: 1px solid #e5e7eb; padding: 12px;
-      flex-shrink: 0; background: #f9fafb;
-    }
-    .chat-input {
-      flex: 1; border: 1px solid #d1d5db; border-radius: 8px;
-      padding: 8px 12px; font-size: 13px; resize: none;
-      font-family: inherit; width: 100%;
-    }
-    .chat-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
-    .chat-upload-btn {
-      display: flex; align-items: center; justify-content: center;
-      width: 38px; height: 38px; border-radius: 8px;
-      background: #f3f4f6; cursor: pointer; font-size: 18px;
-      border: 1px solid #d1d5db; align-self: flex-end; transition: all .2s;
-    }
-    .chat-upload-btn:hover { background: #e5e7eb; }
-    .chat-file-preview {
-      display: flex; align-items: center; gap: 8px;
-      background: #eff6ff; padding: 6px 12px; border-radius: 6px;
-      font-size: 12px; color: #1d4ed8; margin-bottom: 8px;
-    }
-    .chat-action-btn {
-      display: inline-block; margin-top: 8px; padding: 5px 12px;
-      background: #2563eb; color: #fff; border: none; border-radius: 6px;
-      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
-    }
-    .chat-action-btn:hover { background: #1d4ed8; }
-
-    @media (max-width: 640px) {
-      .chat-panel { right: 0; left: 0; bottom: 0; top: 60px; width: auto; border-radius: 16px 16px 0 0; }
-    }
-
     /* ─── CHECKBOX ────────────────────────────────────────── */
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
     .checkbox-item {
@@ -588,6 +516,104 @@
       flex-shrink: 0;
     }
     .checkbox-item span { font-size: 13px; color: #374151; line-height: 1.5; }
+
+    /* ─── CONNECT FORM ───────────────────────────────────── */
+    .connect-card {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      border-radius: 16px;
+      padding: 40px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .connect-card h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .connect-card p { font-size: 15px; color: #94a3b8; line-height: 1.7; }
+    .connect-form {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 28px;
+      margin-top: 28px;
+      text-align: left;
+    }
+    .connect-form label { color: #e2e8f0; }
+    .connect-form input {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+    .connect-form input::placeholder { color: rgba(255,255,255,0.4); }
+    .connect-form input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.2);
+    }
+    .connect-status {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+    }
+    .connect-status.success {
+      display: block;
+      background: rgba(5,150,105,0.2);
+      border: 1px solid rgba(5,150,105,0.4);
+      color: #6ee7b7;
+    }
+    .connect-status.error {
+      display: block;
+      background: rgba(220,38,38,0.2);
+      border: 1px solid rgba(220,38,38,0.4);
+      color: #fca5a5;
+    }
+
+    /* ─── MY REQUESTS ────────────────────────────────────── */
+    .requests-view { display: none; }
+    .requests-view.active { display: block; }
+    .request-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all .2s;
+    }
+    .request-card:hover { border-color: #93c5fd; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .request-sid { font-family: monospace; font-size: 13px; color: #1e3a5f; font-weight: 600; }
+    .request-meta { font-size: 12px; color: #6b7280; margin-top: 4px; }
+    .request-status {
+      font-size: 12px; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .status-waiting { background: #fffbeb; color: #92400e; }
+    .status-submitted { background: #eff6ff; color: #1d4ed8; }
+    .status-confirmed { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fef2f2; color: #991b1b; }
+    .status-completed { background: #d1fae5; color: #065f46; }
+    .status-canceled { background: #f3f4f6; color: #6b7280; }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: #9ca3af;
+    }
+    .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 18px; color: #6b7280; margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ─── MOBILE ──────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .form-grid.two-col, .form-grid.three-col { grid-template-columns: 1fr; }
+      .number-row-fields { grid-template-columns: 1fr; }
+      .review-grid { grid-template-columns: 1fr; }
+      .radio-group { flex-direction: column; }
+      .main { margin: 16px auto; }
+      .connect-card { padding: 24px; }
+      .connect-card h1 { font-size: 22px; }
+      .nav { padding: 12px 16px; }
+      .nav-subtitle { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -595,47 +621,23 @@
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-logo">Auto<span>Port</span></div>
-  <div class="nav-badge">Internal Agent Tool</div>
-  <div style="flex:1"></div>
-  <button class="btn-chat-toggle" id="btn-chat-toggle" onclick="toggleChat()">💬 AI Assistant</button>
+  <span class="nav-subtitle">Phone Number Porting for GHL</span>
+  <div class="nav-right">
+    <button class="nav-btn active" id="nav-new" onclick="showView('new')">New Request</button>
+    <button class="nav-btn" id="nav-requests" onclick="showView('requests')">My Requests</button>
+  </div>
 </nav>
 
-<!-- FLOATING CHAT PANEL -->
-<div class="chat-panel" id="chat-panel" style="display:none">
-  <div class="chat-header">
-    <span style="font-weight:700">🤖 AutoPort AI</span>
-    <span style="font-size:11px;color:#93c5fd">Paste tickets, ask questions, upload files</span>
-    <button onclick="toggleChat()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;margin-left:auto">✕</button>
-  </div>
-  <div class="chat-messages" id="chat-messages">
-    <div class="chat-msg assistant">
-      <div class="chat-bubble">Hey! I'm your porting assistant. You can:<br>
-      • <strong>Paste a full ticket</strong> and I'll extract all porting details<br>
-      • <strong>Ask me anything</strong> about porting, rejections, timelines<br>
-      • <strong>Upload a CSV or bill</strong> and I'll process it<br>
-      • Say <strong>"fill form"</strong> after I extract info to auto-populate the form</div>
-    </div>
-  </div>
-  <div class="chat-input-wrap">
-    <div class="chat-file-preview" id="chat-file-preview" style="display:none">
-      <span id="chat-file-name"></span>
-      <button onclick="clearChatFile()" style="background:none;border:none;color:#dc2626;cursor:pointer">✕</button>
-    </div>
-    <div style="display:flex;gap:8px">
-      <label class="chat-upload-btn" title="Upload file">
-        📎
-        <input type="file" id="chat-file-input" onchange="handleChatFile(this)" style="display:none" accept=".pdf,.csv,.txt,.png,.jpg,.jpeg" />
-      </label>
-      <textarea class="chat-input" id="chat-input" placeholder="Paste a ticket, ask a question, or describe what you need..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage()}"></textarea>
-      <button class="btn btn-primary" onclick="sendChatMessage()" style="padding:8px 14px;align-self:flex-end">Send</button>
-    </div>
-  </div>
-</div>
+<!-- ═══════════════ NEW REQUEST VIEW ═══════════════ -->
+<div id="view-new">
 
 <!-- PROGRESS STEPS -->
-<div class="progress-wrap">
+<div class="progress-wrap" id="progress-wrap">
   <div class="progress-steps">
-    <button class="step-btn active" id="step-nav-1" onclick="goToStep(1)">
+    <button class="step-btn active" id="step-nav-0" onclick="goToStep(0)">
+      <span class="step-num">0</span> Connect
+    </button>
+    <button class="step-btn" id="step-nav-1" onclick="goToStep(1)">
       <span class="step-num">1</span> Eligibility
     </button>
     <button class="step-btn" id="step-nav-2" onclick="goToStep(2)">
@@ -656,37 +658,60 @@
 <div class="main">
 
   <!-- ══════════════════════════════════════════════ -->
+  <!-- STEP 0 — CONNECT YOUR TWILIO ACCOUNT           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="step-panel active" id="step-0">
+    <div class="connect-card">
+      <h1>Connect Your Phone Account</h1>
+      <p>AutoPort needs your Account SID and Auth Token to check number portability, upload documents, and submit port requests on your behalf. Your credentials are sent securely with each request and are never stored on our servers.</p>
+
+      <div class="connect-form">
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Account SID <span class="req">*</span></label>
+          <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Found in your phone system dashboard (starts with AC)</div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Auth Token <span class="req">*</span></label>
+          <input type="password" id="twilio-token" placeholder="Your Auth Token" autocomplete="off" />
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Found next to your Account SID in your dashboard</div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Notification Email <span class="req">*</span> <span class="hint" style="color:rgba(255,255,255,0.4)">(port status updates sent here)</span></label>
+          <input type="email" id="twilio-email" placeholder="you@yourcompany.com" />
+        </div>
+
+        <div id="connect-status" class="connect-status"></div>
+
+        <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700;width:100%;justify-content:center;margin-top:16px;padding:14px" onclick="validateTwilio()" id="btn-connect">
+          Connect & Verify Account
+        </button>
+      </div>
+
+      <div style="margin-top:24px;font-size:12px;color:#64748b;line-height:1.8">
+        <strong style="color:#94a3b8">Where to find your credentials:</strong><br>
+        <strong>GoHighLevel / LC Phone:</strong> Settings → Phone Integration → Account SID & Auth Token<br>
+        <strong>Twilio Direct:</strong> Log in to console.twilio.com — SID & Token are on the dashboard<br>
+        Use a subaccount SID if porting to a specific subaccount
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
   <!-- STEP 1 — ELIGIBILITY CHECK                     -->
   <!-- ══════════════════════════════════════════════ -->
-  <div class="step-panel active" id="step-1">
+  <div class="step-panel" id="step-1">
     <div class="card">
       <div class="card-header">
-        <h2>📞 Check Number Portability</h2>
-        <p>Enter the phone number(s) you'd like to port to GoHighLevel. We'll check if they're eligible before you start.</p>
+        <h2>Check Number Portability</h2>
+        <p>Enter the phone number(s) you'd like to port. We'll check if they're eligible for porting.</p>
       </div>
       <div class="card-body">
 
-        <!-- SMART PASTE ZONE -->
-        <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:10px;padding:20px;margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-            <span style="font-size:24px">🧠</span>
-            <div>
-              <div style="font-size:15px;font-weight:700;color:#fff">Smart Paste — Drop a full ticket here</div>
-              <div style="font-size:12px;color:#93c5fd">AI will extract name, address, phone numbers, carrier, account #, PIN — everything</div>
-            </div>
-          </div>
-          <textarea id="smart-paste-input" placeholder="Paste the full ticket/email content here... &#10;&#10;Example: 'Hi, I need to port my number (312) 588-9960 from AT&T. My name is Derek Jones, account #445566, PIN 1234. Address: 1803 Great Falls Dr, Plainfield IL 60586. Business: Jones Marketing LLC'" style="width:100%;min-height:100px;border:2px solid rgba(255,255,255,0.3);border-radius:8px;padding:12px;font-size:13px;background:rgba(255,255,255,0.1);color:#fff;resize:vertical;font-family:inherit" onfocus="this.style.borderColor='#f59e0b'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'"></textarea>
-          <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
-            <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700" onclick="smartExtract()" id="btn-smart-extract">⚡ Extract Details</button>
-            <span id="smart-paste-status" style="font-size:12px;color:#93c5fd"></span>
-          </div>
-          <div id="smart-paste-results" style="display:none;margin-top:14px;background:rgba(255,255,255,0.95);border-radius:8px;padding:16px;color:#111"></div>
-        </div>
-
         <div class="alert alert-info">
-          <div class="alert-icon">ℹ️</div>
+          <div class="alert-icon">i</div>
           <div>
-            <strong>Quick tip:</strong> Paste a ticket above to auto-fill everything, upload a CSV for bulk numbers, or enter numbers manually below.
+            <strong>Tip:</strong> Upload a CSV for bulk numbers, or enter them manually below.
           </div>
         </div>
 
@@ -695,17 +720,17 @@
           <input type="file" id="csv-file-input" accept=".csv,.txt,.xlsx" onchange="handleCSVUpload(this)" />
           <div class="csv-icon">📊</div>
           <div class="csv-text">Drop a CSV file here or click to upload bulk numbers</div>
-          <div class="csv-sub">CSV, TXT, or XLSX · One number per row · Optional columns: name, type, account#, pin</div>
+          <div class="csv-sub">CSV or TXT — One number per row — Optional columns: name, type, account#, pin</div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <button class="btn-csv-template" onclick="downloadCSVTemplate()">📥 Download CSV Template</button>
+          <button class="btn-csv-template" onclick="downloadCSVTemplate()">Download CSV Template</button>
           <span id="csv-status" style="font-size:12px;color:#6b7280"></span>
         </div>
 
         <!-- CSV Preview -->
         <div class="csv-preview" id="csv-preview" style="display:none">
           <div class="csv-preview-header">
-            <h4>📋 Imported Numbers</h4>
+            <h4>Imported Numbers</h4>
             <div style="display:flex;gap:8px;align-items:center">
               <span class="csv-preview-count" id="csv-count">0</span>
               <button class="btn-csv-template" onclick="clearCSVImport()" style="border-color:#dc2626;color:#dc2626">Clear All</button>
@@ -723,14 +748,14 @@
               <input type="tel" class="elig-num" placeholder="+1 (312) 588-9960" oninput="formatPhone(this)" />
               <div class="field-error" style="display:none"></div>
             </div>
-            <div id="elig-badge-0" class="elig-badge elig-unknown" style="margin-bottom:4px">● Not Checked</div>
+            <div id="elig-badge-0" class="elig-badge elig-unknown" style="margin-bottom:4px">Not Checked</div>
           </div>
         </div>
 
         <button class="btn-add" onclick="addEligRow()">+ Add Another Number</button>
 
         <div class="form-actions">
-          <div></div>
+          <button class="btn btn-secondary" onclick="goToStep(0)">← Back</button>
           <button class="btn btn-primary" onclick="checkEligibility()" id="btn-check-elig">
             Check Eligibility →
           </button>
@@ -746,13 +771,13 @@
   <div class="step-panel" id="step-2">
     <div class="card">
       <div class="card-header">
-        <h2>👤 Account Holder Information</h2>
+        <h2>Account Holder Information</h2>
         <p>This must match exactly what your current carrier has on file. Mismatches cause rejections.</p>
       </div>
       <div class="card-body">
 
         <div id="elig-summary" class="alert alert-success" style="display:none">
-          <div class="alert-icon">✅</div>
+          <div class="alert-icon">✓</div>
           <div id="elig-summary-text"></div>
         </div>
 
@@ -760,17 +785,17 @@
         <div class="form-group" style="margin-bottom:20px">
           <label>Account Type <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-card" id="rc-individual" onclick="selectType('individual')">
+            <label class="radio-card selected" id="rc-individual" onclick="selectType('individual')">
               <input type="radio" name="customerType" value="individual" checked />
               <div>
-                <div class="radio-card-label">🏠 Individual / Residential</div>
+                <div class="radio-card-label">Individual / Residential</div>
                 <div class="radio-card-sub">Personal phone account</div>
               </div>
             </label>
             <label class="radio-card" id="rc-business" onclick="selectType('business')">
               <input type="radio" name="customerType" value="business" />
               <div>
-                <div class="radio-card-label">🏢 Business</div>
+                <div class="radio-card-label">Business</div>
                 <div class="radio-card-sub">Company / organization account</div>
               </div>
             </label>
@@ -781,61 +806,49 @@
         <div class="form-grid two-col" style="margin-bottom:18px">
           <div class="form-group">
             <label>First Name <span class="req">*</span></label>
-            <input type="text" id="firstName" placeholder="Derek" />
+            <input type="text" id="firstName" placeholder="John" />
             <div class="field-error" id="err-firstName" style="display:none"></div>
           </div>
           <div class="form-group">
             <label>Last Name <span class="req">*</span></label>
-            <input type="text" id="lastName" placeholder="Jones" />
+            <input type="text" id="lastName" placeholder="Smith" />
             <div class="field-error" id="err-lastName" style="display:none"></div>
           </div>
         </div>
 
-        <!-- Business Name — shown only when Business is selected -->
+        <!-- Business Name -->
         <div class="form-group" id="businessNameGroup" style="display:none;margin-bottom:18px">
-          <label>Business / Company Name <span class="req">*</span> <span class="hint">(as it appears on your carrier account)</span></label>
-          <input type="text" id="businessName" placeholder="Jones Marketing LLC" />
+          <label>Business / Company Name <span class="req">*</span> <span class="hint">(as on your carrier account)</span></label>
+          <input type="text" id="businessName" placeholder="Acme Corp LLC" />
           <div class="field-error" id="err-businessName" style="display:none"></div>
         </div>
 
         <div class="form-group" style="margin-bottom:20px">
           <label>Email Address <span class="req">*</span> <span class="hint">(LOA will be sent here)</span></label>
-          <input type="email" id="email" placeholder="derek@example.com" />
+          <input type="email" id="email" placeholder="you@example.com" />
           <div class="field-error" id="err-email" style="display:none"></div>
         </div>
 
-        <!-- Twilio / GHL Account Info -->
-        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:16px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:12px;">🔑 Twilio / GHL Account</div>
-          <div class="form-grid two-col">
-            <div class="form-group">
-              <label>Account SID <span class="hint">(Twilio subaccount)</span></label>
-              <input type="text" id="accountSid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Leave blank to use default master account</div>
-            </div>
-            <div class="form-group">
-              <label>GHL Location ID <span class="hint">(optional)</span></label>
-              <input type="text" id="locationId" placeholder="location_xxxxxxxx" />
-              <div style="font-size:11px;color:#9ca3af;margin-top:4px;">For webhook routing after port completes</div>
-            </div>
+        <!-- GHL Location ID -->
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">GHL Configuration (Optional)</div>
+          <div class="form-group">
+            <label>GHL Location ID <span class="hint">(for webhook routing after port completes)</span></label>
+            <input type="text" id="locationId" placeholder="location_xxxxxxxx" />
           </div>
         </div>
 
         <!-- CC / BCC Emails -->
         <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">📬 Notification Recipients</div>
-          <div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6;">
-            All status updates will automatically be CC'd to <strong style="color:#1e3a5f;">migration@leadconnectorhq.com</strong>.
-            Add extra people below if needed.
-          </div>
+          <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px;">Additional Notification Recipients (Optional)</div>
           <div class="form-grid two-col">
             <div class="form-group">
-              <label>CC Email <span class="hint">(optional)</span></label>
+              <label>CC Email</label>
               <input type="email" id="ccEmail" placeholder="manager@company.com" />
               <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Visible to recipient</div>
             </div>
             <div class="form-group">
-              <label>BCC Email <span class="hint">(optional)</span></label>
+              <label>BCC Email</label>
               <input type="email" id="bccEmail" placeholder="records@company.com" />
               <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Hidden from other recipients</div>
             </div>
@@ -843,20 +856,20 @@
         </div>
 
         <!-- Service Address -->
-        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px;padding-top:4px;border-top:1px solid #e5e7eb;padding-top:16px">
-          📍 Service Address <span style="font-size:12px;font-weight:400;color:#6b7280">(must match your carrier's records)</span>
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px;border-top:1px solid #e5e7eb;padding-top:16px">
+          Service Address <span style="font-size:12px;font-weight:400;color:#6b7280">(must match your carrier's records)</span>
         </h3>
 
         <div class="form-group" style="margin-bottom:14px">
           <label>Street Address <span class="req">*</span></label>
-          <input type="text" id="street" placeholder="1803 Great Falls Dr" />
+          <input type="text" id="street" placeholder="123 Main St" />
           <div class="field-error" id="err-street" style="display:none"></div>
         </div>
 
         <div class="form-grid three-col" style="margin-bottom:20px">
           <div class="form-group">
             <label>City <span class="req">*</span></label>
-            <input type="text" id="city" placeholder="Plainfield" />
+            <input type="text" id="city" placeholder="Chicago" />
             <div class="field-error" id="err-city" style="display:none"></div>
           </div>
           <div class="form-group">
@@ -885,14 +898,14 @@
           </div>
           <div class="form-group">
             <label>ZIP Code <span class="req">*</span></label>
-            <input type="text" id="zip" placeholder="60586" maxlength="10" />
+            <input type="text" id="zip" placeholder="60601" maxlength="10" />
             <div class="field-error" id="err-zip" style="display:none"></div>
           </div>
         </div>
 
         <!-- Numbers to Port -->
         <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px;padding-top:16px;border-top:1px solid #e5e7eb">
-          📱 Numbers to Port
+          Numbers to Port
         </h3>
 
         <div id="port-numbers-wrap"></div>
@@ -913,13 +926,13 @@
   <div class="step-panel" id="step-3">
     <div class="card">
       <div class="card-header">
-        <h2>📄 Upload Required Documents</h2>
-        <p>Your billing statement proves ownership of the numbers. PDF only, max 4MB each.</p>
+        <h2>Upload Required Documents</h2>
+        <p>Your billing statement proves ownership of the numbers. PDF only, max 4MB.</p>
       </div>
       <div class="card-body">
 
         <div class="alert alert-warn">
-          <div class="alert-icon">⚠️</div>
+          <div class="alert-icon">!</div>
           <div>
             <strong>Important:</strong> Your billing statement must show the same name and address you entered on the previous step. Mismatches are the #1 cause of port rejections.
           </div>
@@ -932,7 +945,7 @@
             <input type="file" id="upload-bill" accept=".pdf" onchange="handleFileSelect('bill', this)" />
             <div class="upload-icon">📋</div>
             <div class="upload-text">Drop your phone bill here or click to browse</div>
-            <div class="upload-sub">PDF only · Max 4MB</div>
+            <div class="upload-sub">PDF only — Max 4MB</div>
           </div>
           <div id="bill-selected" style="display:none" class="file-selected">
             <span>📄</span>
@@ -942,9 +955,9 @@
           <div class="field-error" id="err-bill" style="display:none"></div>
         </div>
 
-        <!-- LOA info & Batch LOA Options -->
+        <!-- LOA Options -->
         <div class="batch-loa-section">
-          <h4>📝 Letter of Authorization (LOA)</h4>
+          <h4>Letter of Authorization (LOA)</h4>
           <p style="font-size:13px;color:#15803d;line-height:1.6;margin-bottom:14px">
             Choose how LOAs should be generated for your port request:
           </p>
@@ -953,7 +966,7 @@
             <input type="radio" name="loaMode" value="single" checked />
             <div>
               <div class="batch-loa-label">Single LOA (All numbers on one document)</div>
-              <div class="batch-loa-desc">Best for numbers under the same account holder and carrier. One signature covers all.</div>
+              <div class="batch-loa-desc">Best for numbers under the same account holder and carrier.</div>
             </div>
           </label>
 
@@ -961,7 +974,7 @@
             <input type="radio" name="loaMode" value="per-carrier" />
             <div>
               <div class="batch-loa-label">Separate LOA per Carrier</div>
-              <div class="batch-loa-desc">Numbers from different carriers each get their own LOA. Recommended for mixed-carrier batches.</div>
+              <div class="batch-loa-desc">Recommended for mixed-carrier batches.</div>
             </div>
           </label>
 
@@ -969,22 +982,22 @@
             <input type="radio" name="loaMode" value="per-number" />
             <div>
               <div class="batch-loa-label">Individual LOA per Number</div>
-              <div class="batch-loa-desc">Each number gets its own LOA document. Use when numbers have different account holders.</div>
+              <div class="batch-loa-desc">Use when numbers have different account holders.</div>
             </div>
           </label>
 
           <div style="margin-top:12px;font-size:12px;color:#6b7280;line-height:1.6">
-            Twilio generates LOAs automatically after submission. You'll receive them by email to sign digitally.
+            LOAs are generated automatically after submission. You'll receive them by email to sign digitally.
             <span id="loa-count-hint" style="font-weight:600;color:#059669"></span>
           </div>
         </div>
 
         <!-- Terms checkboxes -->
-        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:14px">✅ Agreement</h3>
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin:24px 0 14px">Agreement</h3>
         <div class="checkbox-group" id="terms-group">
           <label class="checkbox-item">
             <input type="checkbox" name="terms" value="rates" />
-            <span>I understand I will pay standard Twilio rates for my phone number and usage after porting completes.</span>
+            <span>I understand I will pay standard rates for my phone number and usage after porting completes.</span>
           </label>
           <label class="checkbox-item">
             <input type="checkbox" name="terms" value="active" />
@@ -992,7 +1005,7 @@
           </label>
           <label class="checkbox-item">
             <input type="checkbox" name="terms" value="configure" />
-            <span>I understand I should configure my number in the GHL portal before my number ports.</span>
+            <span>I understand I should configure my number in my portal before the port date.</span>
           </label>
           <label class="checkbox-item">
             <input type="checkbox" name="terms" value="termination" />
@@ -1000,7 +1013,7 @@
           </label>
           <label class="checkbox-item">
             <input type="checkbox" name="terms" value="messages" />
-            <span>I understand I may be unable to receive SMS messages for up to 3 business days after the port completes.</span>
+            <span>I understand SMS may be unavailable for up to 3 business days after the port completes.</span>
           </label>
         </div>
         <div class="field-error" id="err-terms" style="display:none;margin-top:8px"></div>
@@ -1019,10 +1032,24 @@
   <div class="step-panel" id="step-4">
     <div class="card">
       <div class="card-header">
-        <h2>🔍 Review Your Port Request</h2>
-        <p>Please review everything below carefully before submitting. Errors here cause carrier rejections.</p>
+        <h2>Review Your Port Request</h2>
+        <p>Review everything below carefully before submitting. Errors cause carrier rejections.</p>
       </div>
       <div class="card-body">
+
+        <div class="review-section">
+          <div class="review-section-title">Phone Account</div>
+          <div class="review-grid">
+            <div class="review-item">
+              <label>Account SID</label>
+              <p id="rev-sid">—</p>
+            </div>
+            <div class="review-item">
+              <label>Account Name</label>
+              <p id="rev-twilio-name">—</p>
+            </div>
+          </div>
+        </div>
 
         <div class="review-section">
           <div class="review-section-title">Account Holder</div>
@@ -1043,14 +1070,6 @@
               <label>Service Address</label>
               <p id="rev-address">—</p>
             </div>
-            <div class="review-item">
-              <label>Account SID</label>
-              <p id="rev-sid">Default (master)</p>
-            </div>
-            <div class="review-item">
-              <label>Location ID</label>
-              <p id="rev-location">—</p>
-            </div>
           </div>
         </div>
 
@@ -1068,21 +1087,13 @@
             </div>
             <div class="review-item">
               <label>Letter of Authorization</label>
-              <p id="rev-loa">Will be generated by Twilio after submission</p>
+              <p id="rev-loa">Will be generated after submission</p>
             </div>
           </div>
         </div>
 
-        <!-- AI VALIDATION CHECK -->
-        <div id="ai-validation" style="display:none;margin-top:20px"></div>
-        <div style="text-align:center;margin-top:16px">
-          <button class="btn btn-outline" onclick="runAIValidation()" id="btn-ai-validate" style="border-color:#f59e0b;color:#92400e">
-            🤖 Run AI Pre-Submit Check
-          </button>
-        </div>
-
         <div class="alert alert-warn" style="margin-top:20px">
-          <div class="alert-icon">⏱️</div>
+          <div class="alert-icon">!</div>
           <div>
             <strong>Timeline:</strong> Porting typically takes 5–15 business days. You'll receive a status email at each step. Do NOT cancel your existing carrier service until the port is confirmed complete.
           </div>
@@ -1091,9 +1102,9 @@
         <div class="form-actions" style="flex-wrap:wrap;gap:10px">
           <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
           <div style="display:flex;gap:10px">
-            <button class="btn btn-outline" onclick="generateLOA()" id="btn-loa">📝 Generate LOA PDF</button>
+            <button class="btn btn-outline" onclick="generateLOA()" id="btn-loa">Generate LOA PDF</button>
             <button class="btn btn-green" onclick="submitPortRequest()" id="btn-submit">
-              Submit Port Request 🚀
+              Submit Port Request
             </button>
           </div>
         </div>
@@ -1107,46 +1118,42 @@
   <div class="step-panel" id="step-5">
     <div class="card">
       <div class="card-header">
-        <h2>🎉 Request Submitted!</h2>
+        <h2>Request Submitted!</h2>
         <p>Your port-in request has been received and is being processed.</p>
       </div>
       <div class="card-body">
 
         <div class="alert alert-success">
-          <div class="alert-icon">✅</div>
+          <div class="alert-icon">✓</div>
           <div>
             <strong>Port Request ID:</strong> <span id="port-request-id" style="font-family:monospace;font-size:15px">—</span><br/>
             You'll receive an email shortly with your Letter of Authorization to sign. Check your inbox at <span id="conf-email">—</span>
           </div>
         </div>
 
-        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:16px">📊 Port Status</h3>
+        <h3 style="font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:16px">Port Status</h3>
         <div class="status-timeline">
-
           <div class="timeline-step">
             <div class="timeline-dot done">✓</div>
             <div class="timeline-content">
               <h4>Request Submitted</h4>
-              <p>Your information has been validated and sent to Twilio.</p>
+              <p>Your information has been validated and submitted.</p>
             </div>
           </div>
-
           <div class="timeline-step">
-            <div class="timeline-dot active">✉️</div>
+            <div class="timeline-dot active">✉</div>
             <div class="timeline-content">
               <h4>Waiting for LOA Signature</h4>
               <p>Check your email to sign the Letter of Authorization. You have 30 days.</p>
             </div>
           </div>
-
           <div class="timeline-step">
-            <div class="timeline-dot pending" style="color:#9ca3af">📤</div>
+            <div class="timeline-dot pending" style="color:#9ca3af">→</div>
             <div class="timeline-content">
               <h4>Submitted to Carrier</h4>
-              <p>Once signed, Twilio will submit to your current carrier.</p>
+              <p>Once signed, your request will be submitted to your current carrier.</p>
             </div>
           </div>
-
           <div class="timeline-step">
             <div class="timeline-dot pending" style="color:#9ca3af">📅</div>
             <div class="timeline-content">
@@ -1154,51 +1161,178 @@
               <p>Your carrier confirms the Firm Order Commitment date.</p>
             </div>
           </div>
-
           <div class="timeline-step">
-            <div class="timeline-dot pending" style="color:#9ca3af">🏁</div>
+            <div class="timeline-dot pending" style="color:#9ca3af">✓</div>
             <div class="timeline-content">
               <h4>Port Complete</h4>
-              <p>Your number is live in GoHighLevel — ready to use!</p>
+              <p>Your number is live and ready to use!</p>
             </div>
           </div>
-
         </div>
 
         <div style="margin-top:24px;padding-top:24px;border-top:1px solid #e5e7eb">
-          <h3 style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">💡 What to do now</h3>
+          <h3 style="font-size:14px;font-weight:700;color:#374151;margin-bottom:12px">What to do now</h3>
           <ul style="font-size:13.5px;color:#374151;line-height:2;padding-left:20px">
             <li>Check your email (<span id="conf-email-2">—</span>) for the LOA to sign</li>
             <li>Keep your numbers active with your current carrier</li>
             <li>Configure your GHL workflows for these numbers while you wait</li>
-            <li>Watch for status update emails — we'll notify you at each step</li>
-            <li>If rejected, you'll see a fix-and-resubmit option here automatically</li>
+            <li>Watch for status update emails — you'll be notified at each step</li>
           </ul>
         </div>
 
         <div class="form-actions">
           <button class="btn btn-secondary" onclick="startOver()">Start New Request</button>
-          <button class="btn btn-primary" onclick="checkStatus()">🔄 Refresh Status</button>
+          <button class="btn btn-primary" onclick="checkStatus()">Refresh Status</button>
         </div>
       </div>
     </div>
   </div>
 
 </div><!-- /main -->
+</div><!-- /view-new -->
+
+<!-- ═══════════════ MY REQUESTS VIEW ═══════════════ -->
+<div id="view-requests" class="requests-view">
+  <div class="main">
+    <div class="card">
+      <div class="card-header">
+        <h2>My Port Requests</h2>
+        <p>Track the status of your submitted port requests.</p>
+      </div>
+      <div class="card-body">
+        <div id="requests-list">
+          <div class="empty-state" id="requests-empty">
+            <div class="empty-state-icon">📋</div>
+            <h3>No requests yet</h3>
+            <p>Submit a port request to see it tracked here.</p>
+            <button class="btn btn-primary" style="margin-top:16px" onclick="showView('new')">Start a Port Request</button>
+          </div>
+        </div>
+        <div id="requests-loading" style="display:none;text-align:center;padding:40px">
+          <div class="spinner spinner-dark" style="margin:0 auto 12px"></div>
+          <p style="color:#6b7280;font-size:13px">Checking status...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let currentStep = 1;
+let currentStep = 0;
 let eligibleNumbers = [];
-let uploadedFiles = { bill: null, loa: null };
+let uploadedFiles = { bill: null };
 let portRequestData = {};
 let csvImportedNumbers = [];
 let loaMode = 'single';
 
-// Relative API base — works on Vercel (same domain) and local dev
+// Account credentials (kept in memory, never persisted to server)
+let twilioCredentials = {
+  accountSid: '',
+  authToken: '',
+  email: '',
+  friendlyName: '',
+};
+
 const API_BASE = '/api/porting';
+
+// Helper to build headers with Twilio creds
+function authHeaders(extra = {}) {
+  return {
+    'X-Twilio-Account-SID': twilioCredentials.accountSid,
+    'X-Twilio-Auth-Token': twilioCredentials.authToken,
+    ...extra,
+  };
+}
+
+// ═══════════════════════════════════════════════════
+//  VIEW SWITCHING (New Request vs My Requests)
+// ═══════════════════════════════════════════════════
+function showView(view) {
+  document.getElementById('view-new').style.display = view === 'new' ? 'block' : 'none';
+  document.getElementById('view-requests').style.display = view === 'requests' ? 'block' : 'none';
+  document.getElementById('view-requests').classList.toggle('active', view === 'requests');
+  document.getElementById('nav-new').classList.toggle('active', view === 'new');
+  document.getElementById('nav-requests').classList.toggle('active', view === 'requests');
+
+  if (view === 'requests') loadMyRequests();
+}
+
+// ═══════════════════════════════════════════════════
+//  STEP 0 — CONNECT TWILIO
+// ═══════════════════════════════════════════════════
+async function validateTwilio() {
+  const sid = document.getElementById('twilio-sid').value.trim();
+  const token = document.getElementById('twilio-token').value.trim();
+  const email = document.getElementById('twilio-email').value.trim();
+  const statusEl = document.getElementById('connect-status');
+  const btn = document.getElementById('btn-connect');
+
+  if (!sid || !token || !email) {
+    statusEl.className = 'connect-status error';
+    statusEl.textContent = 'Please fill in all fields.';
+    return;
+  }
+
+  if (!sid.startsWith('AC') || sid.length < 34) {
+    statusEl.className = 'connect-status error';
+    statusEl.textContent = 'Account SID should start with "AC" and be 34 characters.';
+    return;
+  }
+
+  btn.innerHTML = '<div class="spinner" style="width:14px;height:14px"></div> Verifying...';
+  btn.disabled = true;
+  statusEl.style.display = 'none';
+
+  try {
+    const resp = await fetch(`${API_BASE}/validate-twilio`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Twilio-Account-SID': sid,
+        'X-Twilio-Auth-Token': token,
+      },
+      body: JSON.stringify({}),
+    });
+    const data = await resp.json();
+
+    if (data.valid) {
+      twilioCredentials.accountSid = sid;
+      twilioCredentials.authToken = token;
+      twilioCredentials.email = email;
+      twilioCredentials.friendlyName = data.friendlyName || sid;
+
+      statusEl.className = 'connect-status success';
+      statusEl.innerHTML = `Connected! Account: <strong>${data.friendlyName || sid}</strong> (${data.type || 'standard'})`;
+
+      // Pre-fill email on step 2
+      const emailField = document.getElementById('email');
+      if (!emailField.value) emailField.value = email;
+
+      // Save to localStorage for My Requests
+      const saved = JSON.parse(localStorage.getItem('autoport_creds') || '{}');
+      saved.accountSid = sid;
+      saved.email = email;
+      localStorage.setItem('autoport_creds', JSON.stringify(saved));
+
+      setTimeout(() => {
+        document.getElementById('step-nav-0').classList.add('done');
+        goToStep(1);
+      }, 800);
+    } else {
+      statusEl.className = 'connect-status error';
+      statusEl.textContent = data.error || 'Invalid credentials.';
+    }
+  } catch (err) {
+    statusEl.className = 'connect-status error';
+    statusEl.textContent = 'Connection failed: ' + err.message;
+  } finally {
+    btn.innerHTML = 'Connect & Verify Account';
+    btn.disabled = false;
+  }
+}
 
 // ═══════════════════════════════════════════════════
 //  CSV BULK UPLOAD
@@ -1206,19 +1340,14 @@ const API_BASE = '/api/porting';
 function handleCSVUpload(input) {
   const file = input.files[0];
   if (!file) return;
-
   const ext = file.name.split('.').pop().toLowerCase();
   if (!['csv', 'txt', 'xlsx'].includes(ext)) {
     alert('Please upload a CSV, TXT, or XLSX file.');
     input.value = '';
     return;
   }
-
   const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result;
-    parseCSVContent(text, file.name);
-  };
+  reader.onload = function(e) { parseCSVContent(e.target.result, file.name); };
   reader.readAsText(file);
 }
 
@@ -1226,43 +1355,30 @@ function parseCSVContent(text, filename) {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length === 0) return;
 
-  // Detect if first line is header
   const firstLine = lines[0].toLowerCase();
-  const hasHeader = firstLine.includes('phone') || firstLine.includes('number') ||
-                    firstLine.includes('name') || firstLine.includes('type');
+  const hasHeader = firstLine.includes('phone') || firstLine.includes('number') || firstLine.includes('name') || firstLine.includes('type');
   const startIdx = hasHeader ? 1 : 0;
 
   csvImportedNumbers = [];
-  const errors = [];
 
   for (let i = startIdx; i < lines.length; i++) {
     const cols = lines[i].split(/[,\t;|]/).map(c => c.trim().replace(/^["']|["']$/g, ''));
     if (!cols[0]) continue;
 
-    // First column is always the phone number
     let rawNum = cols[0].replace(/\D/g, '');
     if (rawNum.length === 10) rawNum = '1' + rawNum;
     if (rawNum.length === 11 && rawNum[0] === '1') {
       const e164 = '+' + rawNum;
-      // Detect columns by header or position
-      const name = cols[1] || '';
-      const type = (cols[2] || '').toUpperCase();
-      const acct = cols[3] || '';
-      const pin = cols[4] || '';
-
       csvImportedNumbers.push({
         number: e164,
-        name: name,
-        type: type === 'MOBILE' || type === 'WIRELESS' ? 'MOBILE' : 'LOCAL',
-        account: acct,
-        pin: pin
+        name: cols[1] || '',
+        type: (cols[2] || '').toUpperCase() === 'MOBILE' || (cols[2] || '').toUpperCase() === 'WIRELESS' ? 'MOBILE' : 'LOCAL',
+        account: cols[3] || '',
+        pin: cols[4] || ''
       });
-    } else {
-      errors.push(`Row ${i + 1}: "${cols[0]}" is not a valid US number`);
     }
   }
 
-  // Deduplicate
   const seen = new Set();
   csvImportedNumbers = csvImportedNumbers.filter(n => {
     if (seen.has(n.number)) return false;
@@ -1270,20 +1386,10 @@ function parseCSVContent(text, filename) {
     return true;
   });
 
-  // Show preview
   renderCSVPreview();
-
   const statusEl = document.getElementById('csv-status');
-  let statusMsg = `Loaded ${csvImportedNumbers.length} numbers from ${filename}`;
-  if (errors.length > 0) statusMsg += ` (${errors.length} skipped)`;
-  statusEl.textContent = statusMsg;
-  statusEl.style.color = errors.length > 0 ? '#b45309' : '#059669';
-
-  if (errors.length > 0 && errors.length <= 5) {
-    console.warn('CSV import errors:', errors);
-  }
-
-  updateLOAHint();
+  statusEl.textContent = `Loaded ${csvImportedNumbers.length} numbers from ${filename}`;
+  statusEl.style.color = '#059669';
 }
 
 function renderCSVPreview() {
@@ -1291,10 +1397,7 @@ function renderCSVPreview() {
   const body = document.getElementById('csv-preview-body');
   const count = document.getElementById('csv-count');
 
-  if (csvImportedNumbers.length === 0) {
-    preview.style.display = 'none';
-    return;
-  }
+  if (csvImportedNumbers.length === 0) { preview.style.display = 'none'; return; }
 
   preview.style.display = 'block';
   count.textContent = csvImportedNumbers.length;
@@ -1305,7 +1408,6 @@ function renderCSVPreview() {
         <span class="csv-row-num">${n.number}</span>
         ${n.name ? `<span class="csv-row-meta"> — ${n.name}</span>` : ''}
         <span class="csv-row-meta">(${n.type})</span>
-        ${n.account ? `<span class="csv-row-meta"> · Acct: ${n.account}</span>` : ''}
       </div>
       <button class="csv-row-remove" onclick="removeCSVNumber(${i})">✕</button>
     </div>
@@ -1315,9 +1417,7 @@ function renderCSVPreview() {
 function removeCSVNumber(idx) {
   csvImportedNumbers.splice(idx, 1);
   renderCSVPreview();
-  document.getElementById('csv-count').textContent = csvImportedNumbers.length;
   document.getElementById('csv-status').textContent = `${csvImportedNumbers.length} numbers remaining`;
-  updateLOAHint();
 }
 
 function clearCSVImport() {
@@ -1325,11 +1425,10 @@ function clearCSVImport() {
   document.getElementById('csv-preview').style.display = 'none';
   document.getElementById('csv-file-input').value = '';
   document.getElementById('csv-status').textContent = '';
-  updateLOAHint();
 }
 
 function downloadCSVTemplate() {
-  const template = 'phone_number,contact_name,type,account_number,pin\n+13125889960,Derek Jones,LOCAL,,\n+13125550001,Jane Smith,MOBILE,ACC123,1234\n+18475551234,Bob Lee,LOCAL,,\n';
+  const template = 'phone_number,contact_name,type,account_number,pin\n+13125889960,John Smith,LOCAL,,\n+13125550001,Jane Doe,MOBILE,ACC123,1234\n';
   const blob = new Blob([template], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1347,10 +1446,7 @@ function downloadCSVTemplate() {
   zone.addEventListener('drop', e => {
     e.preventDefault();
     zone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-      const fakeInput = { files: e.dataTransfer.files };
-      handleCSVUpload(fakeInput);
-    }
+    if (e.dataTransfer.files.length) handleCSVUpload({ files: e.dataTransfer.files });
   });
 })();
 
@@ -1370,31 +1466,30 @@ function updateLOAHint() {
   const hint = document.getElementById('loa-count-hint');
   if (!hint) return;
   if (totalNums === 0) { hint.textContent = ''; return; }
-
-  if (loaMode === 'single') {
-    hint.textContent = ` — 1 LOA will be generated for all ${totalNums} number(s).`;
-  } else if (loaMode === 'per-number') {
-    hint.textContent = ` — ${totalNums} individual LOA(s) will be generated.`;
-  } else {
-    hint.textContent = ` — Separate LOAs will be grouped by carrier for ${totalNums} number(s).`;
-  }
+  if (loaMode === 'single') hint.textContent = ` — 1 LOA for all ${totalNums} number(s).`;
+  else if (loaMode === 'per-number') hint.textContent = ` — ${totalNums} individual LOA(s).`;
+  else hint.textContent = ` — Separate LOAs grouped by carrier for ${totalNums} number(s).`;
 }
 
 // ═══════════════════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════════════════
 function goToStep(n) {
+  // Don't allow skipping step 0 without credentials
+  if (n > 0 && !twilioCredentials.accountSid) {
+    n = 0;
+  }
+
   document.getElementById(`step-${currentStep}`).classList.remove('active');
   document.getElementById(`step-nav-${currentStep}`).classList.remove('active');
   currentStep = n;
   document.getElementById(`step-${n}`).classList.add('active');
-  const nav = document.getElementById(`step-nav-${n}`);
-  nav.classList.add('active');
+  document.getElementById(`step-nav-${n}`).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ═══════════════════════════════════════════════════
-//  STEP 1 — ELIGIBILITY
+//  STEP 1 — ELIGIBILITY (Real Twilio API)
 // ═══════════════════════════════════════════════════
 let eligRowCount = 1;
 
@@ -1410,7 +1505,7 @@ function addEligRow() {
       <input type="tel" class="elig-num" placeholder="+1 (555) 000-0000" oninput="formatPhone(this)" />
       <div class="field-error" style="display:none"></div>
     </div>
-    <div id="elig-badge-${i}" class="elig-badge elig-unknown" style="margin-bottom:4px">● Not Checked</div>
+    <div id="elig-badge-${i}" class="elig-badge elig-unknown" style="margin-bottom:4px">Not Checked</div>
     <button class="btn-remove" onclick="this.parentElement.remove()">−</button>
   `;
   wrap.appendChild(div);
@@ -1429,19 +1524,15 @@ function formatPhone(input) {
   input.dataset.e164 = '+1' + v.slice(1);
 }
 
-function checkEligibility() {
+async function checkEligibility() {
   const inputs = document.querySelectorAll('.elig-num');
   const numbers = [];
   let valid = true;
 
-  // Collect manually entered numbers
-  inputs.forEach((inp, i) => {
+  inputs.forEach((inp) => {
     const e164 = inp.dataset.e164;
     if (!e164 || e164.length < 12) {
-      // Allow empty if CSV numbers exist
-      if (csvImportedNumbers.length > 0 && !inp.value.trim()) {
-        return; // skip empty manual fields when CSV is loaded
-      }
+      if (csvImportedNumbers.length > 0 && !inp.value.trim()) return;
       inp.classList.add('error');
       inp.nextElementSibling.style.display = 'block';
       inp.nextElementSibling.textContent = 'Enter a valid US phone number';
@@ -1453,11 +1544,10 @@ function checkEligibility() {
     }
   });
 
-  // Add CSV imported numbers
   const csvNums = csvImportedNumbers.map(n => n.number);
+  const allNumbers = [...new Set([...numbers, ...csvNums])];
 
-  // Must have at least some numbers
-  if (numbers.length === 0 && csvNums.length === 0) {
+  if (allNumbers.length === 0) {
     if (inputs.length > 0) {
       inputs[0].classList.add('error');
       inputs[0].nextElementSibling.style.display = 'block';
@@ -1466,90 +1556,77 @@ function checkEligibility() {
     return;
   }
 
-  // Combine, deduplicate
-  const allNumbers = [...new Set([...numbers, ...csvNums])];
-
   if (!valid && csvNums.length === 0) return;
 
-  // Update badges to "checking"
+  // Update badges to checking
   document.querySelectorAll('[id^="elig-badge-"]').forEach((b,i) => {
     if (numbers[i]) {
       b.className = 'elig-badge elig-checking';
-      b.textContent = '⟳ Checking…';
+      b.textContent = 'Checking...';
     }
   });
 
   const btn = document.getElementById('btn-check-elig');
-  btn.innerHTML = '<div class="spinner"></div> Checking…';
+  btn.innerHTML = '<div class="spinner"></div> Checking...';
   btn.disabled = true;
 
-  // Simulate API call (replace with real fetch to /api/porting/eligibility)
-  setTimeout(() => {
+  try {
+    const resp = await fetch(`${API_BASE}/eligibility`, {
+      method: 'POST',
+      headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phoneNumbers: allNumbers }),
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) throw new Error(data.error || 'Eligibility check failed');
+
     eligibleNumbers = [];
     const badges = document.querySelectorAll('[id^="elig-badge-"]');
 
-    // Check manual numbers
-    numbers.forEach((num, i) => {
-      const isPortable = !num.startsWith('+1800') && !num.startsWith('+1888');
-      const numberType = 'LOCAL';
-      if (badges[i]) {
-        badges[i].className = `elig-badge ${isPortable ? 'elig-portable' : 'elig-notportable'}`;
-        badges[i].textContent = isPortable ? '✓ Portable' : '✗ Not Portable';
+    // Process results for manual numbers
+    data.results.forEach((result, i) => {
+      // Find the badge for manual numbers
+      const manualIdx = numbers.indexOf(result.number);
+      if (manualIdx >= 0 && badges[manualIdx]) {
+        badges[manualIdx].className = `elig-badge ${result.portable ? 'elig-portable' : 'elig-notportable'}`;
+        badges[manualIdx].textContent = result.portable ? '✓ Portable' : '✗ Not Portable';
       }
-      if (isPortable) eligibleNumbers.push({ number: num, type: numberType });
-    });
-
-    // Add CSV numbers (mark as portable unless toll-free)
-    csvImportedNumbers.forEach(csvNum => {
-      const isPortable = !csvNum.number.startsWith('+1800') && !csvNum.number.startsWith('+1888');
-      if (isPortable && !eligibleNumbers.find(e => e.number === csvNum.number)) {
+      if (result.portable) {
         eligibleNumbers.push({
-          number: csvNum.number,
-          type: csvNum.type || 'LOCAL',
-          name: csvNum.name || '',
-          account: csvNum.account || '',
-          pin: csvNum.pin || ''
+          number: result.number,
+          type: result.type || 'LOCAL',
+          pinRequired: result.pinRequired,
         });
       }
     });
 
-    btn.innerHTML = 'Check Eligibility →';
-    btn.disabled = false;
-
-    // Check for toll-free / international numbers
-    const tollFree = allNumbers.filter(n => /^\+1(800|833|844|855|866|877|888)/.test(n));
-    const intl     = allNumbers.filter(n => !n.startsWith('+1'));
-    const manualLane = [...tollFree, ...intl];
-
-    if (manualLane.length > 0) {
-      badges.forEach((b, i) => {
-        if (manualLane.includes(numbers[i])) {
-          b.className = 'elig-badge elig-notportable';
-          b.textContent = '🌐 Manual Required';
-        }
-      });
-      const shouldOpen = confirm(
-        `⚠️ Toll-free or international number detected:\n${manualLane.join(', ')}\n\n` +
-        `These require Twilio's international porting form.\n\n` +
-        `Click OK to open the Twilio International Porting Form in a new tab.`
-      );
-      if (shouldOpen) window.open('https://twlo.my.salesforce-sites.com/InternationalPorting', '_blank');
-    }
+    // Merge CSV data (account/pin) into eligible numbers
+    csvImportedNumbers.forEach(csvNum => {
+      const match = eligibleNumbers.find(e => e.number === csvNum.number);
+      if (match) {
+        match.name = csvNum.name || '';
+        match.account = csvNum.account || '';
+        match.pin = csvNum.pin || '';
+      }
+    });
 
     if (eligibleNumbers.length > 0) {
       populateStep2Numbers();
       updateLOAHint();
-      // Short delay then advance
       setTimeout(() => {
-        document.getElementById('step-nav-1').classList.remove('active');
         document.getElementById('step-nav-1').classList.add('done');
         goToStep(2);
         updateEligSummary();
-      }, 600);
-    } else if (manualLane.length === 0) {
-      alert('None of the numbers you entered are portable. Please contact support at migration@leadconnectorhq.com for assistance.');
+      }, 400);
+    } else {
+      alert('None of the numbers you entered are portable. Please check the numbers and try again.');
     }
-  }, 1800);
+  } catch (err) {
+    alert('Eligibility check error: ' + err.message);
+  } finally {
+    btn.innerHTML = 'Check Eligibility →';
+    btn.disabled = false;
+  }
 }
 
 function updateEligSummary() {
@@ -1566,37 +1643,33 @@ function updateEligSummary() {
 function selectType(type) {
   document.getElementById('rc-individual').classList.toggle('selected', type==='individual');
   document.getElementById('rc-business').classList.toggle('selected', type==='business');
-  // Show business name field when Business is selected
   const bizGroup = document.getElementById('businessNameGroup');
   if (type === 'business') {
     bizGroup.style.display = 'block';
-    document.getElementById('businessName').setAttribute('required','required');
   } else {
     bizGroup.style.display = 'none';
-    document.getElementById('businessName').removeAttribute('required');
     document.getElementById('businessName').value = '';
   }
 }
-document.getElementById('rc-individual').classList.add('selected');
 
 function populateStep2Numbers() {
   const wrap = document.getElementById('port-numbers-wrap');
   wrap.innerHTML = '';
-  eligibleNumbers.forEach((n, i) => {
-    const isWireless = n.type === 'MOBILE';
+  eligibleNumbers.forEach((n) => {
+    const isWireless = n.type === 'MOBILE' || n.pinRequired;
     const div = document.createElement('div');
     div.className = 'number-row';
     div.style.display = 'block';
     div.style.padding = '16px';
     div.innerHTML = `
       <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:10px">
-        📞 ${n.number} <span style="font-size:11px;color:#6b7280;font-weight:400">(${n.type || 'LOCAL'})</span>
+        ${n.number} <span style="font-size:11px;color:#6b7280;font-weight:400">(${n.type || 'LOCAL'})</span>
         ${n.name ? `<span style="font-size:11px;color:#6b7280;font-weight:400"> — ${n.name}</span>` : ''}
       </div>
       <div class="number-row-fields">
         ${isWireless ? `
         <div class="form-group">
-          <label>Wireless Account #</label>
+          <label>Account #</label>
           <input type="text" class="num-acct" placeholder="Account number" value="${n.account || ''}" />
         </div>
         <div class="form-group">
@@ -1611,7 +1684,6 @@ function populateStep2Numbers() {
     wrap.appendChild(div);
   });
 
-  // Show count summary if bulk
   if (eligibleNumbers.length > 5) {
     const summary = document.createElement('div');
     summary.style.cssText = 'text-align:center;padding:12px;color:#2563eb;font-size:13px;font-weight:600;background:#eff6ff;border-radius:8px;margin-top:8px';
@@ -1621,7 +1693,6 @@ function populateStep2Numbers() {
 }
 
 function addPortNumber() {
-  // Allow manually adding more numbers
   const wrap = document.getElementById('port-numbers-wrap');
   const div = document.createElement('div');
   div.className = 'number-row';
@@ -1652,10 +1723,8 @@ function validateStep2() {
     ['city','City is required'],
     ['zip','ZIP code is required'],
   ];
-  // Require business name if business type selected
-  if (isBusiness) {
-    required.push(['businessName','Business name is required']);
-  }
+  if (isBusiness) required.push(['businessName','Business name is required']);
+
   required.forEach(([id, msg]) => {
     const el = document.getElementById(id);
     const err = document.getElementById(`err-${id}`);
@@ -1683,7 +1752,7 @@ function validateStep2() {
   const zip = document.getElementById('zip').value.trim();
   if (zip && !/^\d{5}(-\d{4})?$/.test(zip)) {
     document.getElementById('zip').classList.add('error');
-    document.getElementById('err-zip').textContent = 'Enter a valid ZIP code (e.g. 60586)';
+    document.getElementById('err-zip').textContent = 'Enter a valid ZIP code';
     document.getElementById('err-zip').style.display = 'block';
     ok = false;
   }
@@ -1702,7 +1771,6 @@ function validateStep2() {
 function handleFileSelect(type, input) {
   const file = input.files[0];
   if (!file) return;
-
   if (file.type !== 'application/pdf') {
     document.getElementById(`err-${type}`).textContent = 'File must be a PDF.';
     document.getElementById(`err-${type}`).style.display = 'block';
@@ -1715,7 +1783,6 @@ function handleFileSelect(type, input) {
     input.value = '';
     return;
   }
-
   uploadedFiles[type] = file;
   document.getElementById(`err-${type}`).style.display = 'none';
   document.getElementById(`${type}-filename`).textContent = file.name;
@@ -1732,11 +1799,7 @@ function handleFileSelect(type, input) {
   zone.addEventListener('drop', e => {
     e.preventDefault();
     zone.classList.remove('drag-over');
-    const dt = e.dataTransfer;
-    if (dt.files.length) {
-      const fakeInput = { files: dt.files };
-      handleFileSelect(type, fakeInput);
-    }
+    if (e.dataTransfer.files.length) handleFileSelect(type, { files: e.dataTransfer.files });
   });
 });
 
@@ -1790,17 +1853,22 @@ function buildReview() {
   const city = document.getElementById('city').value.trim();
   const state = document.getElementById('state').value;
   const zip = document.getElementById('zip').value.trim();
+  const locId = document.getElementById('locationId').value.trim();
 
-  const displayName = type === 'business' && bizName
-    ? `${first} ${last} / ${bizName}`
-    : `${first} ${last}`;
+  const displayName = type === 'business' && bizName ? `${first} ${last} / ${bizName}` : `${first} ${last}`;
 
+  // Twilio account section
+  document.getElementById('rev-sid').textContent = twilioCredentials.accountSid;
+  document.getElementById('rev-twilio-name').textContent = twilioCredentials.friendlyName || '—';
+
+  // Account holder section
   document.getElementById('rev-name').textContent = displayName;
-  document.getElementById('rev-type').textContent = type === 'individual' ? '🏠 Individual / Residential' : '🏢 Business';
-  document.getElementById('rev-email').textContent = email + (cc ? ` · CC: ${cc}` : '') + (bcc ? ` · BCC: ${bcc}` : '');
+  document.getElementById('rev-type').textContent = type === 'individual' ? 'Individual / Residential' : 'Business';
+  document.getElementById('rev-email').textContent = email + (cc ? ` | CC: ${cc}` : '') + (bcc ? ` | BCC: ${bcc}` : '');
   document.getElementById('rev-address').textContent = `${street}, ${city}, ${state} ${zip}`;
-  document.getElementById('rev-bill').textContent = uploadedFiles.bill ? `📄 ${uploadedFiles.bill.name}` : '—';
+  document.getElementById('rev-bill').textContent = uploadedFiles.bill ? uploadedFiles.bill.name : '—';
 
+  // Numbers
   const numWrap = document.getElementById('rev-numbers');
   const rows = document.querySelectorAll('#port-numbers-wrap .number-row');
   numWrap.innerHTML = '';
@@ -1818,21 +1886,15 @@ function buildReview() {
     `;
   });
 
-  // LOA mode display
+  // LOA mode
   const loaLabels = {
     'single': '1 LOA for all numbers',
     'per-carrier': 'Separate LOA per carrier',
     'per-number': `Individual LOA per number (${eligibleNumbers.length} LOAs)`
   };
-  document.getElementById('rev-loa').textContent = loaLabels[loaMode] || 'Auto-generated by Twilio';
+  document.getElementById('rev-loa').textContent = loaLabels[loaMode] || 'Auto-generated after submission';
 
-  // Account SID and Location ID
-  const acctSid = document.getElementById('accountSid').value.trim();
-  const locId = document.getElementById('locationId').value.trim();
-  document.getElementById('rev-sid').textContent = acctSid || 'Default (master account)';
-  document.getElementById('rev-location').textContent = locId || '—';
-
-  // Store for submission — includes CC/BCC, businessName, LOA mode, account SID, location ID
+  // Store for submission
   portRequestData = {
     customerType: type,
     customerName: `${first} ${last}`,
@@ -1844,65 +1906,74 @@ function buildReview() {
     address: { street, city, state, zip, country: 'US' },
     phoneNumbers: eligibleNumbers.map(n => ({ number: n.number, type: n.type })),
     loaMode: loaMode,
-    accountSid: acctSid || null,
     locationId: locId || null,
     billingFile: uploadedFiles.bill,
-    isBeta: window.IS_BETA_MODE || false,
   };
-
-  logActivity('review_built', `${eligibleNumbers.length} numbers, ${type}, LOA: ${loaMode}`);
 }
 
 // ═══════════════════════════════════════════════════
-//  STEP 4 — SUBMIT
+//  STEP 4 — SUBMIT (Real API)
 // ═══════════════════════════════════════════════════
-function submitPortRequest() {
+async function submitPortRequest() {
   const btn = document.getElementById('btn-submit');
-  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff"></div> Submitting…';
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff"></div> Submitting...';
   btn.disabled = true;
 
-  // Real API call
-  const formData = new FormData();
-  formData.append('data', JSON.stringify(portRequestData));
-  if (portRequestData.billingFile) {
-    formData.append('billingStatement', portRequestData.billingFile);
-  }
+  try {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(portRequestData));
+    if (portRequestData.billingFile) {
+      formData.append('billingStatement', portRequestData.billingFile);
+    }
 
-  fetch(`${API_BASE}/requests`, { method: 'POST', body: formData })
-    .then(r => r.json())
-    .then(result => {
-      if (!result.success) throw new Error(result.error || 'Submission failed');
-      document.getElementById('port-request-id').textContent = result.portInRequestSid;
-      document.getElementById('conf-email').textContent = portRequestData.authorizedRepresentativeEmail;
-      document.getElementById('conf-email-2').textContent = portRequestData.authorizedRepresentativeEmail;
-      document.getElementById('step-nav-4').classList.add('done');
-      goToStep(5);
-    })
-    .catch(err => {
-      btn.innerHTML = 'Submit Port Request 🚀';
-      btn.disabled = false;
-      alert('Submission error: ' + err.message + '\n\nPlease try again or contact support.');
+    const resp = await fetch(`${API_BASE}/requests`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: formData,
     });
+    const result = await resp.json();
 
-  // Simulated fallback for local dev (remove when backend is live)
-  if (window.IS_BETA_MODE) setTimeout(() => {
-    const fakePortSid = 'KW' + Math.random().toString(36).substr(2,30).toUpperCase();
-    document.getElementById('port-request-id').textContent = fakePortSid;
+    if (!resp.ok || !result.success) throw new Error(result.error || 'Submission failed');
+
+    document.getElementById('port-request-id').textContent = result.portInRequestSid;
     document.getElementById('conf-email').textContent = portRequestData.authorizedRepresentativeEmail;
     document.getElementById('conf-email-2').textContent = portRequestData.authorizedRepresentativeEmail;
+
+    // Save to local storage for My Requests
+    saveRequestToLocal(result.portInRequestSid, portRequestData);
+
     document.getElementById('step-nav-4').classList.add('done');
     goToStep(5);
-  }, 2500);
+  } catch (err) {
+    btn.innerHTML = 'Submit Port Request';
+    btn.disabled = false;
+    alert('Submission error: ' + err.message + '\n\nPlease check your details and try again.');
+  }
 }
 
 function checkStatus() {
+  const sid = document.getElementById('port-request-id').textContent;
+  if (!sid || sid === '—' || !twilioCredentials.accountSid) return;
+
   const btn = event.target;
-  btn.innerHTML = '⟳ Refreshing…';
+  btn.innerHTML = 'Refreshing...';
   btn.disabled = true;
-  setTimeout(() => {
-    btn.innerHTML = '🔄 Refresh Status';
-    btn.disabled = false;
-  }, 1500);
+
+  fetch(`${API_BASE}/requests/${sid}`, {
+    headers: authHeaders(),
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status) {
+        // Could update timeline here based on status
+        alert(`Current status: ${data.status}`);
+      }
+    })
+    .catch(err => alert('Status check error: ' + err.message))
+    .finally(() => {
+      btn.innerHTML = 'Refresh Status';
+      btn.disabled = false;
+    });
 }
 
 function startOver() {
@@ -1912,240 +1983,11 @@ function startOver() {
 }
 
 // ═══════════════════════════════════════════════════
-//  SMART PASTE — AI EXTRACTION
-// ═══════════════════════════════════════════════════
-let lastExtracted = null;
-
-async function smartExtract() {
-  const text = document.getElementById('smart-paste-input').value.trim();
-  if (!text || text.length < 10) {
-    document.getElementById('smart-paste-status').textContent = 'Paste more ticket content (at least 10 chars)';
-    return;
-  }
-
-  const btn = document.getElementById('btn-smart-extract');
-  btn.innerHTML = '<div class="spinner" style="border-color:rgba(26,26,46,0.3);border-top-color:#1a1a2e;width:14px;height:14px"></div> Extracting…';
-  btn.disabled = true;
-  document.getElementById('smart-paste-status').textContent = '';
-
-  try {
-    const resp = await fetch(`${API_BASE}/extract`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
-    const data = await resp.json();
-    if (!data.success) throw new Error(data.error || 'Extraction failed');
-
-    lastExtracted = data.extracted;
-    renderExtractedResults(data.extracted, data.method);
-  } catch (err) {
-    document.getElementById('smart-paste-status').textContent = 'Error: ' + err.message;
-  } finally {
-    btn.innerHTML = '⚡ Extract Details';
-    btn.disabled = false;
-  }
-}
-
-function renderExtractedResults(ext, method) {
-  const box = document.getElementById('smart-paste-results');
-  box.style.display = 'block';
-
-  const nums = (ext.phone_numbers || []).map(n =>
-    `<tr><td style="padding:4px 8px;font-family:monospace">${n.number}</td>
-     <td style="padding:4px 8px">${n.type || 'LOCAL'}</td>
-     <td style="padding:4px 8px">${n.carrier || '—'}</td>
-     <td style="padding:4px 8px">${n.account_number || '—'}</td>
-     <td style="padding:4px 8px">${n.pin || '—'}</td></tr>`
-  ).join('');
-
-  box.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <strong style="color:#059669">✅ Extracted via ${method}</strong>
-      <button class="btn btn-primary" onclick="applyExtractedToForm()" style="padding:6px 16px;font-size:12px">
-        📋 Auto-Fill Form →
-      </button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:10px">
-      <div><strong>Name:</strong> ${ext.firstName || '?'} ${ext.lastName || '?'}</div>
-      <div><strong>Type:</strong> ${ext.customerType || 'individual'}</div>
-      <div><strong>Business:</strong> ${ext.businessName || '—'}</div>
-      <div><strong>Email:</strong> ${ext.email || '—'}</div>
-      <div style="grid-column:1/-1"><strong>Address:</strong> ${ext.address?.street || '?'}, ${ext.address?.city || '?'}, ${ext.address?.state || '?'} ${ext.address?.zip || '?'}</div>
-    </div>
-    ${ext.phone_numbers?.length ? `
-    <table style="width:100%;font-size:12px;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
-      <tr style="background:#f3f4f6"><th style="padding:4px 8px;text-align:left">Number</th><th style="padding:4px 8px;text-align:left">Type</th><th style="padding:4px 8px;text-align:left">Carrier</th><th style="padding:4px 8px;text-align:left">Account #</th><th style="padding:4px 8px;text-align:left">PIN</th></tr>
-      ${nums}
-    </table>` : ''}
-    ${ext.notes ? `<div style="margin-top:8px;font-size:12px;color:#6b7280"><strong>Notes:</strong> ${ext.notes}</div>` : ''}
-  `;
-}
-
-function applyExtractedToForm() {
-  if (!lastExtracted) return;
-  const ext = lastExtracted;
-
-  // Fill form fields
-  if (ext.firstName) document.getElementById('firstName').value = ext.firstName;
-  if (ext.lastName) document.getElementById('lastName').value = ext.lastName;
-  if (ext.email) document.getElementById('email').value = ext.email;
-  if (ext.businessName) {
-    document.getElementById('businessName').value = ext.businessName;
-    selectType('business');
-  }
-  if (ext.address) {
-    if (ext.address.street) document.getElementById('street').value = ext.address.street;
-    if (ext.address.city) document.getElementById('city').value = ext.address.city;
-    if (ext.address.zip) document.getElementById('zip').value = ext.address.zip;
-    if (ext.address.state) {
-      const stateSelect = document.getElementById('state');
-      for (let opt of stateSelect.options) {
-        if (opt.value.toLowerCase() === ext.address.state.toLowerCase() ||
-            opt.text.toLowerCase() === ext.address.state.toLowerCase()) {
-          stateSelect.value = opt.value;
-          break;
-        }
-      }
-    }
-  }
-
-  // Add phone numbers to eligibleNumbers
-  if (ext.phone_numbers?.length) {
-    eligibleNumbers = ext.phone_numbers.map(n => ({
-      number: n.number,
-      type: n.type || 'LOCAL',
-      name: '',
-      account: n.account_number || '',
-      pin: n.pin || '',
-      carrier: n.carrier || ''
-    }));
-    populateStep2Numbers();
-
-    // Also add to eligibility display
-    const wrap = document.getElementById('eligibility-numbers');
-    wrap.innerHTML = '';
-    eligibleNumbers.forEach((n, i) => {
-      const div = document.createElement('div');
-      div.className = 'number-row';
-      div.id = `elig-row-${i}`;
-      div.innerHTML = `
-        <div class="form-group" style="flex:1">
-          <label>Phone Number</label>
-          <input type="tel" class="elig-num" value="${n.number}" readonly style="background:#f0fdf4;border-color:#86efac" />
-          <div class="field-error" style="display:none"></div>
-        </div>
-        <div class="elig-badge elig-portable" style="margin-bottom:4px">✓ Extracted</div>
-      `;
-      wrap.appendChild(div);
-    });
-    eligRowCount = eligibleNumbers.length;
-  }
-
-  // Log the extraction
-  logActivity('smart_paste', `Extracted: ${ext.firstName} ${ext.lastName}, ${(ext.phone_numbers||[]).length} numbers`);
-
-  // Advance to step 2
-  document.getElementById('step-nav-1').classList.add('done');
-  goToStep(2);
-  updateEligSummary();
-  updateLOAHint();
-}
-
-// ═══════════════════════════════════════════════════
-//  CHAT ASSISTANT
-// ═══════════════════════════════════════════════════
-let chatHistory = [];
-let chatFile = null;
-
-function toggleChat() {
-  const panel = document.getElementById('chat-panel');
-  panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-}
-
-function handleChatFile(input) {
-  chatFile = input.files[0];
-  if (chatFile) {
-    document.getElementById('chat-file-preview').style.display = 'flex';
-    document.getElementById('chat-file-name').textContent = `📎 ${chatFile.name} (${(chatFile.size/1024).toFixed(1)}KB)`;
-  }
-}
-
-function clearChatFile() {
-  chatFile = null;
-  document.getElementById('chat-file-input').value = '';
-  document.getElementById('chat-file-preview').style.display = 'none';
-}
-
-async function sendChatMessage() {
-  const input = document.getElementById('chat-input');
-  const message = input.value.trim();
-  if (!message && !chatFile) return;
-
-  // Show user message
-  addChatBubble('user', message || `📎 ${chatFile.name}`);
-  input.value = '';
-
-  // Show typing indicator
-  const typingId = addChatBubble('assistant', '<em style="color:#9ca3af">Thinking...</em>');
-
-  try {
-    const formData = new FormData();
-    formData.append('message', message);
-    formData.append('history', JSON.stringify(chatHistory.slice(-10)));
-    if (chatFile) {
-      formData.append('file', chatFile);
-      clearChatFile();
-    }
-
-    const resp = await fetch(`${API_BASE}/chat`, { method: 'POST', body: formData });
-    const data = await resp.json();
-
-    // Remove typing indicator
-    document.getElementById(typingId)?.remove();
-
-    if (data.success) {
-      // Format markdown-like response
-      let reply = data.reply
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>')
-        .replace(/`([^`]+)`/g, '<code style="background:#f3f4f6;padding:1px 4px;border-radius:3px">$1</code>');
-
-      // Check if AI extracted fields and offer auto-fill
-      if (message.length > 100 && data.reply.includes('+1')) {
-        reply += '<br><button class="chat-action-btn" onclick="smartExtract()">⚡ Extract & Auto-Fill Form</button>';
-      }
-
-      addChatBubble('assistant', reply);
-      chatHistory.push({ role: 'user', content: message });
-      chatHistory.push({ role: 'assistant', content: data.reply });
-    } else {
-      addChatBubble('assistant', `<span style="color:#dc2626">Error: ${data.error}</span>`);
-    }
-  } catch (err) {
-    document.getElementById(typingId)?.remove();
-    addChatBubble('assistant', `<span style="color:#dc2626">Connection error: ${err.message}</span>`);
-  }
-}
-
-function addChatBubble(role, html) {
-  const container = document.getElementById('chat-messages');
-  const id = 'msg-' + Date.now();
-  const div = document.createElement('div');
-  div.className = `chat-msg ${role}`;
-  div.id = id;
-  div.innerHTML = `<div class="chat-bubble">${html}</div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-  return id;
-}
-
-// ═══════════════════════════════════════════════════
 //  LOA PDF GENERATION
 // ═══════════════════════════════════════════════════
 async function generateLOA() {
   const btn = document.getElementById('btn-loa');
-  btn.innerHTML = '⏳ Generating…';
+  btn.innerHTML = 'Generating...';
   btn.disabled = true;
 
   try {
@@ -2166,15 +2008,12 @@ async function generateLOA() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        firstName: first,
-        lastName: last,
+        firstName: first, lastName: last,
         businessName: bizName || null,
         address: { street, city, state, zip },
         phoneNumbers: eligibleNumbers.map(n => ({
-          number: n.number,
-          carrier: n.carrier || '',
-          account_number: n.account || '',
-          pin: n.pin || ''
+          number: n.number, carrier: n.carrier || '',
+          account_number: n.account || '', pin: n.pin || ''
         })),
         loaMode
       })
@@ -2189,114 +2028,128 @@ async function generateLOA() {
     a.download = `LOA-${first}-${last}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
-
-    logActivity('loa_generated', `LOA for ${first} ${last}, ${eligibleNumbers.length} numbers, mode: ${loaMode}`);
   } catch (err) {
     alert('LOA generation error: ' + err.message);
   } finally {
-    btn.innerHTML = '📝 Generate LOA PDF';
+    btn.innerHTML = 'Generate LOA PDF';
     btn.disabled = false;
   }
 }
 
 // ═══════════════════════════════════════════════════
-//  AI PRE-SUBMIT VALIDATION
+//  MY REQUESTS — localStorage-based tracking
 // ═══════════════════════════════════════════════════
-async function runAIValidation() {
-  const btn = document.getElementById('btn-ai-validate');
-  btn.innerHTML = '🤖 Validating…';
-  btn.disabled = true;
-  const box = document.getElementById('ai-validation');
-  box.style.display = 'block';
-  box.innerHTML = '<div style="text-align:center;padding:20px;color:#6b7280">Checking all fields for accuracy...</div>';
+function saveRequestToLocal(sid, data) {
+  const requests = JSON.parse(localStorage.getItem('autoport_requests') || '[]');
+  requests.unshift({
+    sid,
+    customerName: data.customerName,
+    email: data.authorizedRepresentativeEmail,
+    phoneNumbers: data.phoneNumbers.map(n => n.number),
+    createdAt: new Date().toISOString(),
+    status: 'waiting_for_signature',
+  });
+  // Keep last 50
+  localStorage.setItem('autoport_requests', JSON.stringify(requests.slice(0, 50)));
+}
 
-  try {
-    const validationPrompt = `You are a porting validation AI. Check this port request for potential rejection issues. Be strict — carriers reject for ANY mismatch.
+function loadMyRequests() {
+  const requests = JSON.parse(localStorage.getItem('autoport_requests') || '[]');
+  const listEl = document.getElementById('requests-list');
+  const emptyEl = document.getElementById('requests-empty');
 
-PORT REQUEST:
-Name: ${portRequestData.customerName || 'MISSING'}
-Type: ${portRequestData.customerType || 'MISSING'}
-Business: ${portRequestData.businessName || 'N/A'}
-Email: ${portRequestData.authorizedRepresentativeEmail || 'MISSING'}
-Address: ${JSON.stringify(portRequestData.address || {})}
-Phone Numbers: ${JSON.stringify(portRequestData.phoneNumbers || [])}
-Account SID: ${document.getElementById('accountSid')?.value || 'default'}
-Location ID: ${document.getElementById('locationId')?.value || 'none'}
-LOA Mode: ${loaMode}
+  if (requests.length === 0) {
+    emptyEl.style.display = 'block';
+    return;
+  }
 
-Check for:
-1. Missing required fields
-2. Name format issues (should match carrier records exactly)
-3. Address completeness and format
-4. Phone number format (+1XXXXXXXXXX)
-5. Mixed carriers needing separate LOAs
-6. Any other red flags
+  emptyEl.style.display = 'none';
 
-Return a JSON array of issues: [{"severity": "error|warning|ok", "field": "fieldName", "message": "description"}]
-If everything looks good, return [{"severity": "ok", "field": "all", "message": "All checks passed"}]`;
+  listEl.innerHTML = requests.map(req => {
+    const statusClass = getStatusClass(req.status);
+    const statusLabel = getStatusLabel(req.status);
+    const date = new Date(req.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const nums = (req.phoneNumbers || []).join(', ');
 
-    const resp = await fetch(`${API_BASE}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: validationPrompt, history: [] })
-    });
-    const data = await resp.json();
-
-    if (data.success) {
-      const jsonMatch = data.reply.match(/\[[\s\S]*\]/);
-      let issues;
-      try {
-        issues = JSON.parse(jsonMatch[0]);
-      } catch {
-        issues = [{ severity: 'warning', field: 'ai', message: data.reply.substring(0, 300) }];
-      }
-
-      const hasErrors = issues.some(i => i.severity === 'error');
-      const hasWarnings = issues.some(i => i.severity === 'warning');
-      const allOk = issues.every(i => i.severity === 'ok');
-
-      box.innerHTML = `
-        <div style="background:${allOk ? '#ecfdf5' : hasErrors ? '#fef2f2' : '#fffbeb'};border:1px solid ${allOk ? '#86efac' : hasErrors ? '#fca5a5' : '#fcd34d'};border-radius:10px;padding:16px">
-          <div style="font-weight:700;font-size:14px;color:${allOk ? '#059669' : hasErrors ? '#dc2626' : '#d97706'};margin-bottom:10px">
-            ${allOk ? '✅ All Pre-Submit Checks Passed' : hasErrors ? '❌ Issues Found — Fix Before Submitting' : '⚠️ Warnings — Review Before Submitting'}
-          </div>
-          ${issues.map(i => `
-            <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:13px">
-              <span>${i.severity === 'error' ? '🔴' : i.severity === 'warning' ? '🟡' : '🟢'}</span>
-              <div><strong>${i.field}:</strong> ${i.message}</div>
-            </div>
-          `).join('')}
+    return `
+      <div class="request-card">
+        <div>
+          <div class="request-sid">${req.sid}</div>
+          <div class="request-meta">${req.customerName} · ${nums} · ${date}</div>
         </div>
-      `;
+        <span class="request-status ${statusClass}">${statusLabel}</span>
+      </div>
+    `;
+  }).join('');
 
-      logActivity('ai_validation', `${issues.length} checks: ${hasErrors ? 'ERRORS' : hasWarnings ? 'WARNINGS' : 'PASSED'}`);
-    }
-  } catch (err) {
-    box.innerHTML = `<div class="alert alert-error"><div class="alert-icon">⚠️</div><div>AI validation unavailable: ${err.message}</div></div>`;
-  } finally {
-    btn.innerHTML = '🤖 Run AI Pre-Submit Check';
-    btn.disabled = false;
+  // If connected, try to refresh statuses
+  if (twilioCredentials.accountSid) {
+    refreshRequestStatuses(requests);
   }
 }
 
-// ═══════════════════════════════════════════════════
-//  ACTIVITY LOG
-// ═══════════════════════════════════════════════════
-const activityLog = [];
-
-function logActivity(type, detail) {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    type,
-    detail,
-    user: 'agent'
-  };
-  activityLog.push(entry);
-  console.log(`[AutoPort Log] ${type}: ${detail}`);
+async function refreshRequestStatuses(requests) {
+  for (const req of requests.slice(0, 10)) {
+    try {
+      const resp = await fetch(`${API_BASE}/requests/${req.sid}`, {
+        headers: authHeaders(),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.status && data.status !== req.status) {
+          req.status = data.status;
+        }
+      }
+    } catch (_) { /* skip */ }
+  }
+  localStorage.setItem('autoport_requests', JSON.stringify(requests));
+  // Re-render with updated statuses
+  const listEl = document.getElementById('requests-list');
+  if (listEl.children.length > 0) loadMyRequests();
 }
 
-// Log page load
-logActivity('session_start', `AutoPort internal tool loaded`);
+function getStatusClass(status) {
+  const map = {
+    'waiting_for_signature': 'status-waiting',
+    'PortInWaitingForSignature': 'status-waiting',
+    'PortInInProgress': 'status-submitted',
+    'PortInPhoneNumberSubmitted': 'status-submitted',
+    'PortInPhoneNumberPending': 'status-confirmed',
+    'PortInPhoneNumberRejected': 'status-rejected',
+    'PortInCompleted': 'status-completed',
+    'PortInPhoneNumberCompleted': 'status-completed',
+    'canceled': 'status-canceled',
+  };
+  return map[status] || 'status-waiting';
+}
+
+function getStatusLabel(status) {
+  const map = {
+    'waiting_for_signature': 'Waiting for LOA',
+    'PortInWaitingForSignature': 'Waiting for LOA',
+    'PortInInProgress': 'Submitted to Carrier',
+    'PortInPhoneNumberSubmitted': 'Submitted to Carrier',
+    'PortInPhoneNumberPending': 'FOC Confirmed',
+    'PortInPhoneNumberRejected': 'Rejected',
+    'PortInCompleted': 'Completed',
+    'PortInPhoneNumberCompleted': 'Completed',
+    'canceled': 'Canceled',
+  };
+  return map[status] || status;
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT — Restore saved SID if available
+// ═══════════════════════════════════════════════════
+(function init() {
+  const saved = JSON.parse(localStorage.getItem('autoport_creds') || '{}');
+  if (saved.accountSid) {
+    document.getElementById('twilio-sid').value = saved.accountSid;
+  }
+  if (saved.email) {
+    document.getElementById('twilio-email').value = saved.email;
+  }
+})();
 </script>
 
 </body>

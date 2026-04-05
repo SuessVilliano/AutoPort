@@ -19,11 +19,7 @@
       "src": "/api/(.*)",
       "dest": "api/index.js"
     },
-    {
-      "src": "/beta",
-      "dest": "/public/beta.html"
-    },
-    {
+{
       "src": "/sign-loa(.*)",
       "dest": "/public/sign-loa.html"
     },
