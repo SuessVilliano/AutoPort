@@ -2325,6 +2325,18 @@ function quickAsk(text) {
   sendChat();
 }
 
+function toggleMoreQuestions() {
+  const more = document.getElementById('quick-btns-more');
+  const main = document.getElementById('quick-btns-main');
+  if (more.style.display === 'none') {
+    more.style.display = 'flex';
+    main.querySelector('[onclick*="toggleMore"]').textContent = 'Less';
+  } else {
+    more.style.display = 'none';
+    main.querySelector('[onclick*="toggleMore"]').textContent = 'More...';
+  }
+}
+
 // ═══════════════════════════════════════════════════
 //  SUPPORT TICKET GENERATOR
 // ═══════════════════════════════════════════════════
@@ -2437,11 +2449,23 @@ function openGHLSupport() {
       </div>
     </div>
   </div>
-  <div class="quick-btns">
+  <div class="quick-btns" id="quick-btns-main">
     <button class="quick-btn" onclick="quickAsk('How long does porting take?')">Timelines</button>
-    <button class="quick-btn" onclick="quickAsk('My port was rejected. What do I do?')">Rejections</button>
-    <button class="quick-btn" onclick="quickAsk('Where do I find my Account SID?')">Find Credentials</button>
+    <button class="quick-btn" onclick="quickAsk('My port was rejected')">Rejections</button>
+    <button class="quick-btn" onclick="quickAsk('Where do I find my Account SID?')">Credentials</button>
     <button class="quick-btn" onclick="quickAsk('What is an LOA?')">LOA Help</button>
+    <button class="quick-btn" onclick="toggleMoreQuestions()">More...</button>
+  </div>
+  <div class="quick-btns" id="quick-btns-more" style="display:none">
+    <button class="quick-btn" onclick="quickAsk('How much does porting cost?')">Costs</button>
+    <button class="quick-btn" onclick="quickAsk('AT&T porting tips')">AT&T</button>
+    <button class="quick-btn" onclick="quickAsk('Verizon porting tips')">Verizon</button>
+    <button class="quick-btn" onclick="quickAsk('T-Mobile porting tips')">T-Mobile</button>
+    <button class="quick-btn" onclick="quickAsk('How do I check my port status?')">Status</button>
+    <button class="quick-btn" onclick="quickAsk('How do I port toll-free numbers?')">Toll-Free</button>
+    <button class="quick-btn" onclick="quickAsk('How do I upload bulk numbers?')">Bulk CSV</button>
+    <button class="quick-btn" onclick="quickAsk('What is A2P 10DLC?')">SMS Setup</button>
+    <button class="quick-btn" onclick="quickAsk('What happens after porting?')">Post-Port</button>
     <button class="quick-btn" style="background:#fef2f2;border-color:#fca5a5;color:#dc2626" onclick="openSupportTicket()">Contact Support</button>
   </div>
   <div class="chat-input-bar">
