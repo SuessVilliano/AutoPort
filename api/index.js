@@ -774,6 +774,23 @@ app.post('/api/porting/generate-loa', async (req, res) => {
   }
 });
 
+// Debug: test AI connectivity (temporary)
+app.get('/api/porting/debug-ai', async (_req, res) => {
+  const groqKey = process.env.GROQ_API_KEY;
+  if (!groqKey) return res.json({ error: 'No GROQ_API_KEY', keys: { groq: false, gemini: !!process.env.GEMINI_API_KEY } });
+  try {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${groqKey}` },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: 'Say hello in 5 words' }], max_tokens: 50 }),
+    });
+    const data = await resp.json();
+    res.json({ status: resp.status, reply: data.choices?.[0]?.message?.content, raw: JSON.stringify(data).substring(0, 500) });
+  } catch (e) {
+    res.json({ error: e.message, name: e.name });
+  }
+});
+
 // ── Catch-all: serve the porting form ─────────────────────
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
