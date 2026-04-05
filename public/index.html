@@ -767,41 +767,152 @@
 <div class="main">
 
   <!-- ══════════════════════════════════════════════ -->
-  <!-- STEP 0 — CONNECT YOUR TWILIO ACCOUNT           -->
+  <!-- STEP 0 — CONNECT YOUR PHONE ACCOUNT             -->
   <!-- ══════════════════════════════════════════════ -->
   <div class="step-panel active" id="step-0">
     <div class="connect-card">
       <h1>Connect Your Phone Account</h1>
-      <p>AutoPort needs your Account SID and Auth Token to check number portability, upload documents, and submit port requests on your behalf. Your credentials are sent securely with each request and are never stored on our servers.</p>
+      <p>Select how you manage your phone numbers so we can guide you to the right credentials.</p>
 
-      <div class="connect-form">
-        <div class="form-group" style="margin-bottom:16px">
-          <label>Account SID <span class="req">*</span></label>
-          <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Found in your phone system dashboard (starts with AC)</div>
+      <!-- PATH SELECTOR -->
+      <div id="connect-path-select" style="display:flex;gap:16px;margin-top:28px">
+        <div onclick="selectConnectPath('ghl')" id="path-ghl" style="flex:1;background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);border-radius:14px;padding:24px 20px;cursor:pointer;transition:all .2s;text-align:center">
+          <div style="font-size:32px;margin-bottom:10px">🏢</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">I use GoHighLevel</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:6px">LC Phone, LeadConnector, or Twilio through GHL</div>
         </div>
-        <div class="form-group" style="margin-bottom:16px">
-          <label>Auth Token <span class="req">*</span></label>
-          <input type="password" id="twilio-token" placeholder="Your Auth Token" autocomplete="off" />
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Found next to your Account SID in your dashboard</div>
+        <div onclick="selectConnectPath('twilio')" id="path-twilio" style="flex:1;background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);border-radius:14px;padding:24px 20px;cursor:pointer;transition:all .2s;text-align:center">
+          <div style="font-size:32px;margin-bottom:10px">📞</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">I have my own Twilio</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:6px">Direct Twilio account with SID & Auth Token</div>
         </div>
-        <div class="form-group" style="margin-bottom:16px">
-          <label>Notification Email <span class="req">*</span> <span class="hint" style="color:rgba(255,255,255,0.4)">(port status updates sent here)</span></label>
-          <input type="email" id="twilio-email" placeholder="you@yourcompany.com" />
-        </div>
-
-        <div id="connect-status" class="connect-status"></div>
-
-        <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700;width:100%;justify-content:center;margin-top:16px;padding:14px" onclick="validateTwilio()" id="btn-connect">
-          Connect & Verify Account
-        </button>
       </div>
 
-      <div style="margin-top:24px;font-size:12px;color:#64748b;line-height:1.8">
-        <strong style="color:#94a3b8">Where to find your credentials:</strong><br>
-        <strong>GoHighLevel / LC Phone:</strong> Settings → Phone Integration → Account SID & Auth Token<br>
-        <strong>Twilio Direct:</strong> Log in to console.twilio.com — SID & Token are on the dashboard<br>
-        Use a subaccount SID if porting to a specific subaccount
+      <!-- GHL PATH — STEP-BY-STEP GUIDE -->
+      <div id="connect-ghl" style="display:none">
+        <div style="margin-top:24px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:20px">
+          <div style="font-size:14px;font-weight:700;color:#f59e0b;margin-bottom:12px">Which phone system does your GHL account use?</div>
+          <div style="display:flex;gap:10px">
+            <button onclick="showGHLGuide('twilio-integration')" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:14px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+              Twilio Integration<br><span style="font-size:11px;font-weight:400;color:#94a3b8">I connected my own Twilio to GHL</span>
+            </button>
+            <button onclick="showGHLGuide('lc-phone')" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:14px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+              LC Phone / LeadConnector<br><span style="font-size:11px;font-weight:400;color:#94a3b8">GHL's built-in phone system</span>
+            </button>
+            <button onclick="showGHLGuide('not-sure')" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:14px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+              I'm not sure<br><span style="font-size:11px;font-weight:400;color:#94a3b8">Help me figure it out</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- GHL Guide: Twilio Integration -->
+        <div id="guide-twilio-integration" style="display:none;margin-top:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px">
+          <div style="font-size:14px;font-weight:700;color:#6ee7b7;margin-bottom:12px">Your Twilio credentials are in GHL:</div>
+          <ol style="color:#e2e8f0;font-size:13px;line-height:2.2;padding-left:20px">
+            <li>Log into your <strong>GoHighLevel</strong> account</li>
+            <li>Go to <strong>Settings</strong> (gear icon, bottom left)</li>
+            <li>Click <strong>Phone Integration</strong> in the left sidebar</li>
+            <li>You'll see <strong>Twilio</strong> selected — your <strong>Account SID</strong> and <strong>Auth Token</strong> are displayed there</li>
+            <li>Copy both values and paste them below</li>
+          </ol>
+          <div style="font-size:11px;color:#94a3b8;margin-top:8px">If you're an agency, use the subaccount SID for the specific location you want to port to.</div>
+        </div>
+
+        <!-- GHL Guide: LC Phone -->
+        <div id="guide-lc-phone" style="display:none;margin-top:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px">
+          <div style="font-size:14px;font-weight:700;color:#fbbf24;margin-bottom:12px">LC Phone Users — Here's What You Need to Know</div>
+          <p style="color:#e2e8f0;font-size:13px;line-height:1.8;margin-bottom:14px">
+            LC Phone (LeadConnector) manages your phone system for you. To port numbers through AutoPort, you'll need your underlying account credentials. Here's how to get them:
+          </p>
+          <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Option 1: Ask Your Agency Admin</div>
+            <p style="color:#94a3b8;font-size:12px;line-height:1.7">If you're a sub-account user, your agency admin can find the credentials in <strong>Settings → Phone Integration</strong> at the agency level. Ask them for the Account SID and Auth Token for your location.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:16px;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Option 2: Switch to Twilio Integration (Agency Owners)</div>
+            <p style="color:#94a3b8;font-size:12px;line-height:1.7">Agency owners can connect their own Twilio account in <strong>Settings → Phone Integration → Switch to Twilio</strong>. This gives you full control and access to SID & Auth Token. <a href="https://support.gohighlevel.com" target="_blank" style="color:#60a5fa">Learn more</a></p>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:16px">
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Option 3: Use GHL's Built-In Porting</div>
+            <p style="color:#94a3b8;font-size:12px;line-height:1.7">GHL has a built-in number porting tool for LC Phone users. Go to <strong>Settings → Phone Numbers → Port Number</strong> in your GHL dashboard. AutoPort is designed for users with their own Twilio or Twilio-integrated GHL accounts.</p>
+          </div>
+        </div>
+
+        <!-- GHL Guide: Not Sure -->
+        <div id="guide-not-sure" style="display:none;margin-top:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px">
+          <div style="font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:12px">Let's figure it out:</div>
+          <ol style="color:#e2e8f0;font-size:13px;line-height:2.2;padding-left:20px">
+            <li>Log into your <strong>GoHighLevel</strong> account</li>
+            <li>Go to <strong>Settings</strong> (gear icon)</li>
+            <li>Click <strong>Phone Integration</strong></li>
+            <li>Look at what's selected at the top:
+              <ul style="margin-top:6px;padding-left:16px;line-height:2">
+                <li><strong>If it says "Twilio"</strong> with an Account SID visible → You have Twilio Integration. Copy the SID & Auth Token and paste below.</li>
+                <li><strong>If it says "LC Phone" or "LeadConnector"</strong> → You're on GHL's managed system. See the LC Phone guide above.</li>
+              </ul>
+            </li>
+          </ol>
+          <button onclick="showGHLGuide('lc-phone')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-family:inherit;font-size:12px;margin-top:8px">Show LC Phone Guide</button>
+        </div>
+
+        <!-- CREDENTIALS FORM (shown after guide) -->
+        <div class="connect-form" style="margin-top:20px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:14px">Once you have your credentials, enter them below:</div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Account SID <span class="req">*</span></label>
+            <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Auth Token <span class="req">*</span></label>
+            <input type="password" id="twilio-token" placeholder="Your Auth Token" autocomplete="off" />
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Notification Email <span class="req">*</span> <span class="hint" style="color:rgba(255,255,255,0.4)">(port status updates sent here)</span></label>
+            <input type="email" id="twilio-email" placeholder="you@yourcompany.com" />
+          </div>
+          <div id="connect-status" class="connect-status"></div>
+          <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700;width:100%;justify-content:center;margin-top:12px;padding:14px" onclick="validateTwilio()" id="btn-connect">
+            Connect & Verify Account
+          </button>
+        </div>
+
+        <div style="text-align:center;margin-top:16px">
+          <button onclick="selectConnectPath(null)" style="background:none;border:none;color:#64748b;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline">← Back to selection</button>
+        </div>
+      </div>
+
+      <!-- TWILIO DIRECT PATH -->
+      <div id="connect-twilio-direct" style="display:none">
+        <div class="connect-form" style="margin-top:24px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:14px">Enter your Twilio credentials from <strong style="color:#e2e8f0">console.twilio.com</strong></div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Account SID <span class="req">*</span></label>
+            <input type="text" id="twilio-sid-direct" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">On your Twilio Console dashboard</div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Auth Token <span class="req">*</span></label>
+            <input type="password" id="twilio-token-direct" placeholder="Your Auth Token" autocomplete="off" />
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Click "Show" next to Auth Token on the dashboard</div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Notification Email <span class="req">*</span> <span class="hint" style="color:rgba(255,255,255,0.4)">(port status updates sent here)</span></label>
+            <input type="email" id="twilio-email-direct" placeholder="you@yourcompany.com" />
+          </div>
+          <div id="connect-status-direct" class="connect-status"></div>
+          <button class="btn" style="background:#f59e0b;color:#1a1a2e;font-weight:700;width:100%;justify-content:center;margin-top:12px;padding:14px" onclick="validateTwilioDirect()" id="btn-connect-direct">
+            Connect & Verify Account
+          </button>
+        </div>
+
+        <div style="text-align:center;margin-top:16px">
+          <button onclick="selectConnectPath(null)" style="background:none;border:none;color:#64748b;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline">← Back to selection</button>
+        </div>
+      </div>
+
+      <!-- Security note (always visible) -->
+      <div style="margin-top:20px;font-size:11px;color:#475569;text-align:center;line-height:1.6">
+        Your credentials are sent securely with each request and are <strong>never stored</strong> on our servers.
       </div>
     </div>
   </div>
@@ -1370,24 +1481,76 @@ function showView(view) {
 }
 
 // ═══════════════════════════════════════════════════
-//  STEP 0 — CONNECT TWILIO
+//  STEP 0 — CONNECT (DUAL PATH)
 // ═══════════════════════════════════════════════════
+function selectConnectPath(path) {
+  const select = document.getElementById('connect-path-select');
+  const ghl = document.getElementById('connect-ghl');
+  const twilioDirect = document.getElementById('connect-twilio-direct');
+
+  // Reset
+  select.style.display = path ? 'none' : 'flex';
+  ghl.style.display = path === 'ghl' ? 'block' : 'none';
+  twilioDirect.style.display = path === 'twilio' ? 'block' : 'none';
+
+  // Highlight selected card
+  document.getElementById('path-ghl').style.borderColor = path === 'ghl' ? '#f59e0b' : 'rgba(255,255,255,0.15)';
+  document.getElementById('path-twilio').style.borderColor = path === 'twilio' ? '#f59e0b' : 'rgba(255,255,255,0.15)';
+
+  // Hide all GHL guides when resetting
+  if (!path) {
+    ['twilio-integration', 'lc-phone', 'not-sure'].forEach(g =>
+      document.getElementById('guide-' + g).style.display = 'none');
+  }
+}
+
+function showGHLGuide(type) {
+  ['twilio-integration', 'lc-phone', 'not-sure'].forEach(g =>
+    document.getElementById('guide-' + g).style.display = g === type ? 'block' : 'none');
+}
+
+// Validate from GHL path (uses twilio-sid / twilio-token fields)
 async function validateTwilio() {
-  const sid = document.getElementById('twilio-sid').value.trim();
-  const token = document.getElementById('twilio-token').value.trim();
-  const email = document.getElementById('twilio-email').value.trim();
-  const statusEl = document.getElementById('connect-status');
-  const btn = document.getElementById('btn-connect');
+  return doValidate(
+    document.getElementById('twilio-sid'),
+    document.getElementById('twilio-token'),
+    document.getElementById('twilio-email'),
+    document.getElementById('connect-status'),
+    document.getElementById('btn-connect')
+  );
+}
+
+// Validate from Twilio direct path
+async function validateTwilioDirect() {
+  return doValidate(
+    document.getElementById('twilio-sid-direct'),
+    document.getElementById('twilio-token-direct'),
+    document.getElementById('twilio-email-direct'),
+    document.getElementById('connect-status-direct'),
+    document.getElementById('btn-connect-direct')
+  );
+}
+
+async function doValidate(sidEl, tokenEl, emailEl, statusEl, btn) {
+  const sid = sidEl.value.trim();
+  const token = tokenEl.value.trim();
+  const email = emailEl.value.trim();
 
   if (!sid || !token || !email) {
     statusEl.className = 'connect-status error';
-    statusEl.textContent = 'Please fill in all fields.';
+    statusEl.textContent = 'Please fill in all three fields.';
     return;
   }
 
   if (!sid.startsWith('AC') || sid.length < 34) {
     statusEl.className = 'connect-status error';
-    statusEl.textContent = 'Account SID should start with "AC" and be 34 characters.';
+    statusEl.textContent = 'Account SID should start with "AC" and be 34 characters long.';
+    return;
+  }
+
+  if (token.length < 20) {
+    statusEl.className = 'connect-status error';
+    statusEl.textContent = 'Auth Token looks too short. It should be 32 characters. Make sure you copied the full token.';
     return;
   }
 
@@ -1416,11 +1579,9 @@ async function validateTwilio() {
       statusEl.className = 'connect-status success';
       statusEl.innerHTML = `Connected! Account: <strong>${data.friendlyName || sid}</strong> (${data.type || 'standard'})`;
 
-      // Pre-fill email on step 2
       const emailField = document.getElementById('email');
       if (!emailField.value) emailField.value = email;
 
-      // Save to localStorage for My Requests
       const saved = JSON.parse(localStorage.getItem('autoport_creds') || '{}');
       saved.accountSid = sid;
       saved.email = email;
@@ -1432,7 +1593,7 @@ async function validateTwilio() {
       }, 800);
     } else {
       statusEl.className = 'connect-status error';
-      statusEl.textContent = data.error || 'Invalid credentials.';
+      statusEl.textContent = data.error || 'Invalid credentials. Double-check your Account SID and Auth Token.';
     }
   } catch (err) {
     statusEl.className = 'connect-status error';
@@ -2253,10 +2414,17 @@ function getStatusLabel(status) {
 (function init() {
   const saved = JSON.parse(localStorage.getItem('autoport_creds') || '{}');
   if (saved.accountSid) {
-    document.getElementById('twilio-sid').value = saved.accountSid;
+    // Pre-fill both GHL and Twilio direct forms
+    const sidEl = document.getElementById('twilio-sid');
+    const sidDirectEl = document.getElementById('twilio-sid-direct');
+    if (sidEl) sidEl.value = saved.accountSid;
+    if (sidDirectEl) sidDirectEl.value = saved.accountSid;
   }
   if (saved.email) {
-    document.getElementById('twilio-email').value = saved.email;
+    const emailEl = document.getElementById('twilio-email');
+    const emailDirectEl = document.getElementById('twilio-email-direct');
+    if (emailEl) emailEl.value = saved.email;
+    if (emailDirectEl) emailDirectEl.value = saved.email;
   }
 })();
 // ═══════════════════════════════════════════════════
