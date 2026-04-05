@@ -68,6 +68,7 @@ app.get('/health', (_req, res) => {
     env: {
       emailConfigured: !!(process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY),
       emailProvider:   process.env.SENDGRID_API_KEY ? 'sendgrid' : process.env.RESEND_API_KEY ? 'resend' : 'console',
+      aiProvider:      process.env.GROQ_API_KEY ? 'groq' : process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENAI_API_KEY ? 'openai' : 'static',
     },
   });
 });
