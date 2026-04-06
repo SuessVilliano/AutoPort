@@ -79,6 +79,11 @@
         </div>
 
         <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="sigDate" />
+        </div>
+
+        <div class="form-group">
           <label>Signature (draw below)</label>
           <canvas class="signature-pad" id="sigCanvas"></canvas>
           <div class="sig-actions">
@@ -92,8 +97,14 @@
         </div>
 
         <button class="btn btn-primary" id="signBtn" disabled onclick="submitSignature()">
-          ✍️ Sign & Submit LOA
+          Sign & Submit LOA
         </button>
+
+        <div style="margin-top:16px;padding:14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;">
+          <p style="font-size:12px;color:#1d4ed8;line-height:1.7;margin:0;">
+            <strong>Note:</strong> This is a preview LOA. The official signing link will be sent to your email by Twilio after you submit your port request. You'll sign it electronically through that link.
+          </p>
+        </div>
       </div>
 
       <div class="success-msg" id="successView">
@@ -135,10 +146,14 @@
     canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; hasSig = true; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); checkReady(); });
     canvas.addEventListener('touchend', () => drawing = false);
 
+    const sigDate = document.getElementById('sigDate');
+    sigDate.value = new Date().toISOString().split('T')[0];
+
     agreeCheck.addEventListener('change', checkReady);
     sigName.addEventListener('input', checkReady);
+    sigDate.addEventListener('input', checkReady);
 
-    function checkReady() { signBtn.disabled = !(hasSig && agreeCheck.checked && sigName.value.trim()); }
+    function checkReady() { signBtn.disabled = !(hasSig && agreeCheck.checked && sigName.value.trim() && sigDate.value); }
     function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; checkReady(); }
 
     function submitSignature() {

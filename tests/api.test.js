@@ -141,13 +141,12 @@ describe('Static Files', () => {
 
   test('frontend contains marketplace elements', async () => {
     const res = await request(app).get('/');
-    expect(res.text).toContain('Connect Your Phone Account');
-    expect(res.text).toContain('I use GoHighLevel');
-    expect(res.text).toContain('I have my own Twilio');
+    expect(res.text).toContain('Port Your Phone Numbers');
+    expect(res.text).toContain('GHL Agency Owners');
     expect(res.text).toContain('Account SID');
     expect(res.text).toContain('Auth Token');
     expect(res.text).toContain('My Requests');
-    expect(res.text).toContain('LC Phone');
+    expect(res.text).toContain('Sub-Account');
   });
 });
 
